@@ -60,7 +60,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">#[cfg(not(feature = &quot;fnv&quot;))]</pre>
+                <pre class="has-background-white py-0 px-2">use std::collections::hash_map::RandomState;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -73,7 +73,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::collections::hash_map::RandomState as DefaultHasher;</pre>
+                <pre class="has-background-white py-0 px-2">use std::fmt::Debug;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -86,7 +86,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::fmt::Debug;</pre>
+                <pre class="has-background-white py-0 px-2">use std::hash::{BuildHasher, Hash};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -99,7 +99,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::hash::{BuildHasher, Hash};</pre>
+                <pre class="has-background-white py-0 px-2">use std::path::{Path, PathBuf};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -112,7 +112,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::path::{Path, PathBuf};</pre>
+                <pre class="has-background-white py-0 px-2">use std::sync::{Arc, Mutex};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -125,7 +125,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::sync::{Arc, Mutex};</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -138,7 +138,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">use crate::pool::{Pool, PoolKindSealed};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -151,7 +151,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">#[cfg(feature = &quot;fnv&quot;)]</pre>
+                <pre class="has-background-white py-0 px-2">use crate::{GlobalPool, PoolKind, Pooled};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -164,7 +164,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use fnv::FnvBuildHasher as DefaultHasher;</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -177,7 +177,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A pooled string that belongs to a [`StringPool`].</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -190,7 +190,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use crate::pool::{Pool, PoolKindSealed};</pre>
+                <pre class="has-background-white py-0 px-2">pub type SharedString&lt;S = RandomState&gt; = Pooled&lt;SharedPool&lt;String, S&gt;, S&gt;;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -203,7 +203,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use crate::{GlobalPool, PoolKind, Pooled};</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A pooled path that belongs to a [`PathPool`].</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -216,7 +216,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">pub type SharedPath&lt;S = RandomState&gt; = Pooled&lt;SharedPool&lt;PathBuf, S&gt;, S&gt;;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -229,7 +229,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A pooled string that belongs to a [`StringPool`].</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A pooled buffer that belongs to a [`BufferPool`].</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -242,7 +242,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">pub type SharedString&lt;S = DefaultHasher&gt; = Pooled&lt;SharedPool&lt;String, S&gt;, S&gt;;</pre>
+                <pre class="has-background-white py-0 px-2">pub type SharedBuffer&lt;S = RandomState&gt; = Pooled&lt;SharedPool&lt;Vec&lt;u8&gt;, S&gt;, S&gt;;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -255,7 +255,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A pooled path that belongs to a [`PathPool`].</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -268,7 +268,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">pub type SharedPath&lt;S = DefaultHasher&gt; = Pooled&lt;SharedPool&lt;PathBuf, S&gt;, S&gt;;</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A string interning pool that manages [`SharedString`]s.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -281,7 +281,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A pooled buffer that belongs to a [`BufferPool`].</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -294,7 +294,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">pub type SharedBuffer&lt;S = DefaultHasher&gt; = Pooled&lt;SharedPool&lt;Vec&lt;u8&gt;, S&gt;, S&gt;;</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Each [`StringPool`] has its own storage. When comparing [`SharedString`]s</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -307,7 +307,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; from separate pools, the full string comparison function must be used.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -320,7 +320,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A string interning pool that manages [`SharedString`]s.</pre>
+                <pre class="has-background-white py-0 px-2">pub type StringPool&lt;S = RandomState&gt; = SharedPool&lt;String, S&gt;;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -333,7 +333,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A path interning pool that manages [`SharedPath`]s.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -346,7 +346,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Each [`StringPool`] has its own storage. When comparing [`SharedString`]s</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -359,7 +359,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; from separate pools, the full string comparison function must be used.</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Each [`PathPool`] has its own storage. When comparing [`SharedPath`]s</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -372,7 +372,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">pub type StringPool&lt;S = DefaultHasher&gt; = SharedPool&lt;String, S&gt;;</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; from separate pools, the full string comparison function must be used.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -385,7 +385,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A path interning pool that manages [`SharedPath`]s.</pre>
+                <pre class="has-background-white py-0 px-2">pub type PathPool&lt;S = RandomState&gt; = SharedPool&lt;PathBuf, S&gt;;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -398,7 +398,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A path interning pool that manages [`SharedBuffer`]s.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -411,7 +411,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Each [`PathPool`] has its own storage. When comparing [`SharedPath`]s</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -424,7 +424,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; from separate pools, the full string comparison function must be used.</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Each [`BufferPool`] has its own storage. When comparing [`SharedBuffer`]s</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -437,7 +437,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">pub type PathPool&lt;S = DefaultHasher&gt; = SharedPool&lt;PathBuf, S&gt;;</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; from separate pools, the full string comparison function must be used.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -450,7 +450,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A path interning pool that manages [`SharedBuffer`]s.</pre>
+                <pre class="has-background-white py-0 px-2">pub type BufferPool&lt;S = RandomState&gt; = SharedPool&lt;Vec&lt;u8&gt;, S&gt;;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -463,7 +463,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -476,7 +476,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Each [`BufferPool`] has its own storage. When comparing [`SharedBuffer`]s</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A shared pool of values that ensures only one copy of any given value exists</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -489,7 +489,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; from separate pools, the full string comparison function must be used.</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; at any time.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -502,7 +502,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">pub type BufferPool&lt;S = DefaultHasher&gt; = SharedPool&lt;Vec&lt;u8&gt;, S&gt;;</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -515,7 +515,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; To retrieve a [`Pooled`] value, use [`SharedPool::get()`] or</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -528,7 +528,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; A shared pool of values that ensures only one copy of any given value exists</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; [`SharedPool::get_from_owned`], which are implemented for these types:</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -541,7 +541,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; at any time.</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -554,7 +554,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; - [`String`]&#x2F;[`&amp;str`](str)</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -567,7 +567,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; To retrieve a [`Pooled`] value, use [`SharedPool::get()`] or</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; - [`PathBuf`]&#x2F;[`&amp;Path`](Path)</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -580,7 +580,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; [`SharedPool::get_from_owned`], which are implemented for these types:</pre>
+                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; - [`Vec&lt;u8&gt;`]&#x2F;`&amp;[u8]`</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -589,11 +589,11 @@
                 <a href="#43">43</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                class="column is-1 is-narrow p-0 has-text-centered has-text-danger-light has-background-danger">
                 
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F;</pre>
+            <div class="column has-background-danger-light p-0">
+                <pre class="has-background-danger-light py-0 px-2">#[derive(Debug)]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -606,7 +606,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; - [`String`]&#x2F;[`&amp;str`](str)</pre>
+                <pre class="has-background-white py-0 px-2">pub struct SharedPool&lt;T, S = RandomState&gt;(Arc&lt;Mutex&lt;Pool&lt;Self, S&gt;&gt;&gt;)</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -619,7 +619,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; - [`PathBuf`]&#x2F;[`&amp;Path`](Path)</pre>
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -632,7 +632,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; - [`Vec&lt;u8&gt;`]&#x2F;`&amp;[u8]`</pre>
+                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -641,11 +641,11 @@
                 <a href="#47">47</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-danger-light has-background-danger">
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
                 
             </div>
-            <div class="column has-background-danger-light p-0">
-                <pre class="has-background-danger-light py-0 px-2">#[derive(Debug)]</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -658,7 +658,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">pub struct SharedPool&lt;T, S = DefaultHasher&gt;(Arc&lt;Mutex&lt;Pool&lt;Self, S&gt;&gt;&gt;)</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -671,7 +671,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">impl&lt;S&gt; SharedPool&lt;String, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -684,7 +684,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -697,7 +697,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher;</pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -710,7 +710,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -723,7 +723,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;S&gt; SharedPool&lt;String, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Creates a new pool using the provided [`BuildHasher`] for hashing</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -736,7 +736,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; values.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -749,7 +749,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -758,11 +758,11 @@
                 <a href="#56">56</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    pub fn with_hasher(hasher: S) -&gt; Self {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -771,11 +771,11 @@
                 <a href="#57">57</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Creates a new pool using the provided [`BuildHasher`] for hashing</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        Self::with_capacity_and_hasher(0, hasher)</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -784,11 +784,11 @@
                 <a href="#58">58</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; values.</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -801,7 +801,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -810,11 +810,11 @@
                 <a href="#60">60</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    pub fn with_hasher(hasher: S) -&gt; Self {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Creates a new pool using the provided [`BuildHasher`] for hashing</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -823,11 +823,11 @@
                 <a href="#61">61</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        Self::with_capacity_and_hasher(0, hasher)</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; values. The pool will have enough capacity to allow inserting</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -836,11 +836,11 @@
                 <a href="#62">62</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; `initial_capacity` pooled entries without reallocation.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -853,7 +853,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -862,11 +862,11 @@
                 <a href="#64">64</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Creates a new pool using the provided [`BuildHasher`] for hashing</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    pub fn with_capacity_and_hasher(initial_capacity: usize, hasher: S) -&gt; Self {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -875,11 +875,11 @@
                 <a href="#65">65</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; values. The pool will have enough capacity to allow inserting</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        Self(Arc::new(Mutex::new(Pool::with_capacity_and_hasher(</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -888,11 +888,11 @@
                 <a href="#66">66</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; `initial_capacity` pooled entries without reallocation.</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">            initial_capacity,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -901,11 +901,11 @@
                 <a href="#67">67</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">            hasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -918,7 +918,7 @@
                 1
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    pub fn with_capacity_and_hasher(initial_capacity: usize, hasher: S) -&gt; Self {</pre>
+                <pre class="has-background-success-light py-0 px-2">        ))))</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -931,7 +931,7 @@
                 1
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        Self(Arc::new(Mutex::new(Pool::with_capacity_and_hasher(</pre>
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -940,11 +940,11 @@
                 <a href="#70">70</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">            initial_capacity,</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -953,11 +953,11 @@
                 <a href="#71">71</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">            hasher,</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedString`] if one is found.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -966,11 +966,11 @@
                 <a href="#72">72</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        ))))</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Otherwise, a new [`SharedString`] is created and returned.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -979,11 +979,11 @@
                 <a href="#73">73</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -996,7 +996,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedString`] are still allocated,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1009,7 +1009,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedString`] if one is found.</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same string.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1022,7 +1022,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Otherwise, a new [`SharedString`] is created and returned.</pre>
+                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1031,11 +1031,11 @@
                 <a href="#77">77</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                10
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    pub fn get(&amp;self, borrowed: &amp;str) -&gt; SharedString&lt;S&gt; {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1044,11 +1044,11 @@
                 <a href="#78">78</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                10
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedString`] are still allocated,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1057,11 +1057,11 @@
                 <a href="#79">79</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                10
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same string.</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1074,7 +1074,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1083,11 +1083,11 @@
                 <a href="#81">81</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                10
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    pub fn get(&amp;self, borrowed: &amp;str) -&gt; SharedString&lt;S&gt; {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedString`] if one is found.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1096,11 +1096,11 @@
                 <a href="#82">82</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                10
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Otherwise, a new [`SharedString`] is created and returned.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1109,11 +1109,11 @@
                 <a href="#83">83</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                10
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1126,7 +1126,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedString`] are still allocated,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1139,7 +1139,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedString`] if one is found.</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same string.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1152,7 +1152,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Otherwise, a new [`SharedString`] is created and returned.</pre>
+                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1161,11 +1161,11 @@
                 <a href="#87">87</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    pub fn get_from_owned(&amp;self, owned: String) -&gt; SharedString&lt;S&gt; {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1174,11 +1174,11 @@
                 <a href="#88">88</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedString`] are still allocated,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get::&lt;str&gt;(Cow::Owned(owned), self))</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1187,11 +1187,11 @@
                 <a href="#89">89</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same string.</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1204,7 +1204,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1213,11 +1213,11 @@
                 <a href="#91">91</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    pub fn get_from_owned(&amp;self, owned: String) -&gt; SharedString&lt;S&gt; {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1226,11 +1226,11 @@
                 <a href="#92">92</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get::&lt;str&gt;(Cow::Owned(owned), self))</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">impl&lt;S&gt; SharedPool&lt;PathBuf, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1239,11 +1239,11 @@
                 <a href="#93">93</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1256,7 +1256,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1269,7 +1269,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1282,7 +1282,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;S&gt; SharedPool&lt;PathBuf, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedPath`] if one is found. Otherwise,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1295,7 +1295,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; a new [`SharedPath`] is created and returned.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1308,7 +1308,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1321,7 +1321,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedPath`] are still allocated,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1334,7 +1334,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedPath`] if one is found. Otherwise,</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same path.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1347,7 +1347,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; a new [`SharedPath`] is created and returned.</pre>
+                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1356,11 +1356,11 @@
                 <a href="#102">102</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    pub fn get(&amp;self, borrowed: &amp;Path) -&gt; SharedPath&lt;S&gt; {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1369,11 +1369,11 @@
                 <a href="#103">103</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedPath`] are still allocated,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1382,11 +1382,11 @@
                 <a href="#104">104</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same path.</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1399,7 +1399,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1408,11 +1408,11 @@
                 <a href="#106">106</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    pub fn get(&amp;self, borrowed: &amp;Path) -&gt; SharedPath&lt;S&gt; {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedPath`] if one is found. Otherwise,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1421,11 +1421,11 @@
                 <a href="#107">107</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; a new [`SharedPath`] is created and returned.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1434,11 +1434,11 @@
                 <a href="#108">108</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1451,7 +1451,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedPath`] are still allocated,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1464,7 +1464,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedPath`] if one is found. Otherwise,</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same path.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1477,7 +1477,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; a new [`SharedPath`] is created and returned.</pre>
+                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1486,11 +1486,11 @@
                 <a href="#112">112</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    pub fn get_from_owned(&amp;self, owned: PathBuf) -&gt; SharedPath&lt;S&gt; {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1499,11 +1499,11 @@
                 <a href="#113">113</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedPath`] are still allocated,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get::&lt;Path&gt;(Cow::Owned(owned), self))</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1512,11 +1512,11 @@
                 <a href="#114">114</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same path.</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1529,7 +1529,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1538,11 +1538,11 @@
                 <a href="#116">116</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    pub fn get_from_owned(&amp;self, owned: PathBuf) -&gt; SharedPath&lt;S&gt; {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1551,11 +1551,11 @@
                 <a href="#117">117</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get::&lt;Path&gt;(Cow::Owned(owned), self))</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">impl&lt;S&gt; SharedPool&lt;Vec&lt;u8&gt;, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1564,11 +1564,11 @@
                 <a href="#118">118</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1581,7 +1581,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1594,7 +1594,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1607,7 +1607,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;S&gt; SharedPool&lt;Vec&lt;u8&gt;, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedBuffer`] if one is found. Otherwise,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1620,7 +1620,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; a new [`SharedBuffer`] is created and returned.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1633,7 +1633,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1646,7 +1646,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedBuffer`] are still allocated,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1659,7 +1659,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedBuffer`] if one is found. Otherwise,</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same buffer.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1672,7 +1672,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; a new [`SharedBuffer`] is created and returned.</pre>
+                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1681,11 +1681,11 @@
                 <a href="#127">127</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    pub fn get(&amp;self, borrowed: &amp;[u8]) -&gt; SharedBuffer&lt;S&gt; {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1694,11 +1694,11 @@
                 <a href="#128">128</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedBuffer`] are still allocated,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1707,11 +1707,11 @@
                 <a href="#129">129</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same buffer.</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1724,7 +1724,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1733,11 +1733,11 @@
                 <a href="#131">131</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    pub fn get(&amp;self, borrowed: &amp;[u8]) -&gt; SharedBuffer&lt;S&gt; {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedBuffer`] if one is found. Otherwise,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1746,11 +1746,11 @@
                 <a href="#132">132</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; a new [`SharedBuffer`] is created and returned.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1759,11 +1759,11 @@
                 <a href="#133">133</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1776,7 +1776,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedBuffer`] are still allocated,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1789,7 +1789,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Returns a copy of an existing [`SharedBuffer`] if one is found. Otherwise,</pre>
+                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same buffer.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1802,7 +1802,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; a new [`SharedBuffer`] is created and returned.</pre>
+                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1811,11 +1811,11 @@
                 <a href="#137">137</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    pub fn get_from_owned(&amp;self, owned: Vec&lt;u8&gt;) -&gt; SharedBuffer&lt;S&gt; {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1824,11 +1824,11 @@
                 <a href="#138">138</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; While any copies of the returned [`SharedBuffer`] are still allocated,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get::&lt;[u8]&gt;(Cow::Owned(owned), self))</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1837,11 +1837,11 @@
                 <a href="#139">139</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                1
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; calling this function is guaranteed to return a copy of the same buffer.</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1854,7 +1854,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    #[must_use]</pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1863,11 +1863,11 @@
                 <a href="#141">141</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    pub fn get_from_owned(&amp;self, owned: Vec&lt;u8&gt;) -&gt; SharedBuffer&lt;S&gt; {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1876,11 +1876,11 @@
                 <a href="#142">142</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        self.with_active_symbols(|symbols| symbols.get::&lt;[u8]&gt;(Cow::Owned(owned), self))</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; Clone for SharedPool&lt;T, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1889,11 +1889,11 @@
                 <a href="#143">143</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                1
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1906,7 +1906,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1919,7 +1919,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1932,7 +1932,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; Clone for SharedPool&lt;T, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1941,11 +1941,11 @@
                 <a href="#147">147</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                9
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    fn clone(&amp;self) -&gt; Self {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1954,11 +1954,11 @@
                 <a href="#148">148</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                9
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        Self(self.0.clone())</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1967,11 +1967,11 @@
                 <a href="#149">149</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                9
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1984,7 +1984,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1993,11 +1993,11 @@
                 <a href="#151">151</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                9
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn clone(&amp;self) -&gt; Self {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2006,11 +2006,11 @@
                 <a href="#152">152</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                9
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        Self(self.0.clone())</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PoolKind&lt;S&gt; for SharedPool&lt;T, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2019,11 +2019,11 @@
                 <a href="#153">153</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                9
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2036,7 +2036,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2049,7 +2049,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2062,7 +2062,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PoolKind&lt;S&gt; for SharedPool&lt;T, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2075,7 +2075,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2088,7 +2088,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2101,7 +2101,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PoolKindSealed&lt;S&gt; for SharedPool&lt;T, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2114,7 +2114,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2127,7 +2127,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2140,7 +2140,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2153,7 +2153,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PoolKindSealed&lt;S&gt; for SharedPool&lt;T, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2166,7 +2166,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">    type Stored = T;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2179,7 +2179,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2188,11 +2188,11 @@
                 <a href="#166">166</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                24
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    fn with_active_symbols&lt;R&gt;(&amp;self, logic: impl FnOnce(&amp;mut Pool&lt;Self, S&gt;) -&gt; R) -&gt; R {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2201,11 +2201,11 @@
                 <a href="#167">167</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                24
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        let mut symbols = self.0.lock().expect(&quot;poisoned&quot;);</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2214,11 +2214,11 @@
                 <a href="#168">168</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                24
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    type Stored = T;</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2227,11 +2227,11 @@
                 <a href="#169">169</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                24
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        logic(&amp;mut symbols)</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2244,7 +2244,7 @@
                 24
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn with_active_symbols&lt;R&gt;(&amp;self, logic: impl FnOnce(&amp;mut Pool&lt;Self, S&gt;) -&gt; R) -&gt; R {</pre>
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2253,11 +2253,11 @@
                 <a href="#171">171</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                24
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        let mut symbols = self.0.lock().expect(&quot;poisoned&quot;);</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2266,11 +2266,11 @@
                 <a href="#172">172</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                24
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2"></pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2279,11 +2279,11 @@
                 <a href="#173">173</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                24
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        logic(&amp;mut symbols)</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PartialEq for SharedPool&lt;T, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2292,11 +2292,11 @@
                 <a href="#174">174</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                24
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2309,7 +2309,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2322,7 +2322,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2335,7 +2335,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PartialEq for SharedPool&lt;T, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2344,11 +2344,11 @@
                 <a href="#178">178</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2357,11 +2357,11 @@
                 <a href="#179">179</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        Arc::ptr_eq(&amp;self.0, &amp;other.0)</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2370,11 +2370,11 @@
                 <a href="#180">180</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2387,7 +2387,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2396,11 +2396,11 @@
                 <a href="#182">182</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2409,11 +2409,11 @@
                 <a href="#183">183</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        Arc::ptr_eq(&amp;self.0, &amp;other.0)</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PartialEq&lt;GlobalPool&lt;T&gt;&gt; for SharedPool&lt;T, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2422,11 +2422,11 @@
                 <a href="#184">184</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2439,7 +2439,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2452,7 +2452,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2465,7 +2465,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PartialEq&lt;GlobalPool&lt;T&gt;&gt; for SharedPool&lt;T, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2474,11 +2474,11 @@
                 <a href="#188">188</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                7
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;GlobalPool&lt;T&gt;) -&gt; bool {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2487,11 +2487,11 @@
                 <a href="#189">189</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                7
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        false</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2500,11 +2500,11 @@
                 <a href="#190">190</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                7
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2517,7 +2517,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2526,11 +2526,11 @@
                 <a href="#192">192</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                7
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;GlobalPool&lt;T&gt;) -&gt; bool {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2539,11 +2539,11 @@
                 <a href="#193">193</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                7
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        false</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PartialEq&lt;SharedPool&lt;T, S&gt;&gt; for GlobalPool&lt;T&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2552,11 +2552,11 @@
                 <a href="#194">194</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                7
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2569,7 +2569,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2582,7 +2582,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2595,7 +2595,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PartialEq&lt;SharedPool&lt;T, S&gt;&gt; for GlobalPool&lt;T&gt;</pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2604,11 +2604,11 @@
                 <a href="#198">198</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2617,11 +2617,11 @@
                 <a href="#199">199</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        false</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2630,11 +2630,11 @@
                 <a href="#200">200</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2647,7 +2647,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2656,11 +2656,11 @@
                 <a href="#202">202</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2669,11 +2669,11 @@
                 <a href="#203">203</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        false</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">impl&lt;T&gt; Default for SharedPool&lt;T, RandomState&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2682,11 +2682,11 @@
                 <a href="#204">204</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2699,7 +2699,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2712,7 +2712,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2721,11 +2721,11 @@
                 <a href="#207">207</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T&gt; Default for SharedPool&lt;T, DefaultHasher&gt;</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    fn default() -&gt; Self {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2734,11 +2734,11 @@
                 <a href="#208">208</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">        Self(Arc::default())</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2747,11 +2747,11 @@
                 <a href="#209">209</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2764,64 +2764,12 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
-            </div>
-        </div><div class="columns p-0 m-0">
-            <div
-                class="column is-1 is-narrow p-0 has-text-centered"
-                id="211">
-                <a href="#211">211</a>
-            </div>
-            <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
-            </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn default() -&gt; Self {</pre>
-            </div>
-        </div><div class="columns p-0 m-0">
-            <div
-                class="column is-1 is-narrow p-0 has-text-centered"
-                id="212">
-                <a href="#212">212</a>
-            </div>
-            <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
-            </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        Self(Arc::default())</pre>
-            </div>
-        </div><div class="columns p-0 m-0">
-            <div
-                class="column is-1 is-narrow p-0 has-text-centered"
-                id="213">
-                <a href="#213">213</a>
-            </div>
-            <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
-            </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
-            </div>
-        </div><div class="columns p-0 m-0">
-            <div
-                class="column is-1 is-narrow p-0 has-text-centered"
-                id="214">
-                <a href="#214">214</a>
-            </div>
-            <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
-            </div>
-            <div class="column has-background-white p-0">
                 <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div></div>
         <footer class="footer">
             <div class="content has-text-centered">
-                <p class="heading">Date: 2023-02-06 21:38</p>
+                <p class="heading">Date: 2023-02-06 22:07</p>
             </div>
         </footer>
     </body>
