@@ -4,7 +4,7 @@ use std::thread;
 
 use crate::pool::PoolKindSealed;
 use crate::shared::{SharedPool, SharedString, StringPool};
-use crate::{GlobalBuffer, GlobalPath, GlobalPool, GlobalString};
+use crate::{GlobalBuffer, GlobalPath, GlobalPool, GlobalString, Pooled};
 
 #[test]
 fn basics() {
@@ -49,10 +49,10 @@ fn shared_is_separate() {
     // Create our local pool and request the same string.
     let shared = SharedPool::<String>::default();
     let from_shared = shared.get_from_owned(String::from("shared_is_separate"));
-    // Verify that the strings have different indexes.
-    assert_ne!(from_shared.0 .0.index, from_global.0 .0.index);
+    // Verify that the strings are indeed different.
+    assert!(!Pooled::ptr_eq(&from_shared, &from_global));
     let from_shared_borrowed = shared.get("shared_is_separate");
-    assert_eq!(from_shared.0 .0.index, from_shared_borrowed.0 .0.index);
+    assert!(Pooled::ptr_eq(&from_shared, &from_shared_borrowed));
 
     // Test both directions of partialeq
     assert_eq!(from_shared, from_global);

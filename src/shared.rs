@@ -1,16 +1,16 @@
 use std::borrow::Cow;
+#[cfg(not(feature = "fnv"))]
+use std::collections::hash_map::RandomState as DefaultHasher;
 use std::fmt::Debug;
 use std::hash::{BuildHasher, Hash};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
-use crate::pool::{Pool, PoolKindSealed};
-use crate::{GlobalPool, PoolKind, Pooled};
-
 #[cfg(feature = "fnv")]
 use fnv::FnvBuildHasher as DefaultHasher;
-#[cfg(not(feature = "fnv"))]
-use std::collections::hash_map::RandomState as DefaultHasher;
+
+use crate::pool::{Pool, PoolKindSealed};
+use crate::{GlobalPool, PoolKind, Pooled};
 
 /// A pooled string that belongs to a [`StringPool`].
 pub type SharedString<S = DefaultHasher> = Pooled<SharedPool<String, S>, S>;

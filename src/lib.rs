@@ -28,12 +28,13 @@ pub mod shared;
 #[cfg(test)]
 mod tests;
 
-use crate::pool::{Pool, PoolKindSealed, SharedData};
+#[cfg(not(feature = "fnv"))]
+use std::collections::hash_map::RandomState as DefaultHasher;
 
 #[cfg(feature = "fnv")]
 use fnv::FnvBuildHasher as DefaultHasher;
-#[cfg(not(feature = "fnv"))]
-use std::collections::hash_map::RandomState as DefaultHasher;
+
+use crate::pool::{Pool, PoolKindSealed, SharedData};
 
 /// A pooled string that is stored in a [`GlobalPool`].
 ///
@@ -181,7 +182,12 @@ where
     ///
     /// This function never compares the contents of the contained values.
     #[must_use]
-    pub fn ptr_eq(this: &Self, other: &Self) -> bool {
+    pub fn ptr_eq<P2, S2>(this: &Self, other: &Pooled<P2, S2>) -> bool
+    where
+        P: PartialEq<P2>,
+        P2: PoolKind<S2>,
+        S2: BuildHasher,
+    {
         this.0 .0.pool == other.0 .0.pool && this.0 .0.index == other.0 .0.index
     }
 }

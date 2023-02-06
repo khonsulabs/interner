@@ -1,4 +1,8 @@
 use std::borrow::{Borrow, Cow};
+#[cfg(not(feature = "fnv"))]
+use std::collections::hash_map::RandomState as DefaultHasher;
+#[cfg(not(feature = "hashbrown"))]
+use std::collections::HashSet;
 use std::fmt::Debug;
 use std::hash::{BuildHasher, Hash};
 use std::marker::PhantomData;
@@ -8,13 +12,8 @@ use std::sync::{atomic, Arc};
 
 #[cfg(feature = "fnv")]
 use fnv::FnvBuildHasher as DefaultHasher;
-#[cfg(not(feature = "fnv"))]
-use std::collections::hash_map::RandomState as DefaultHasher;
-
 #[cfg(feature = "hashbrown")]
 use hashbrown::hash_set::HashSet;
-#[cfg(not(feature = "hashbrown"))]
-use std::collections::HashSet;
 
 use crate::{PoolKind, Pooled};
 
