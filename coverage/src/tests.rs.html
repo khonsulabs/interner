@@ -125,7 +125,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use crate::{GlobalBuffer, GlobalPath, GlobalPool, GlobalString};</pre>
+                <pre class="has-background-white py-0 px-2">use crate::{GlobalBuffer, GlobalPath, GlobalPool, GlobalString, Pooled};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -710,7 +710,7 @@
                 1
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    &#x2F;&#x2F; Verify that the strings have different indexes.</pre>
+                <pre class="has-background-success-light py-0 px-2">    &#x2F;&#x2F; Verify that the strings are indeed different.</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -723,7 +723,7 @@
                 1
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    assert_ne!(from_shared.0 .0.index, from_global.0 .0.index);</pre>
+                <pre class="has-background-success-light py-0 px-2">    assert!(!Pooled::ptr_eq(&amp;from_shared, &amp;from_global));</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -749,7 +749,7 @@
                 1
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    assert_eq!(from_shared.0 .0.index, from_shared_borrowed.0 .0.index);</pre>
+                <pre class="has-background-success-light py-0 px-2">    assert!(Pooled::ptr_eq(&amp;from_shared, &amp;from_shared_borrowed));</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2067,7 +2067,7 @@
         </div></div>
         <footer class="footer">
             <div class="content has-text-centered">
-                <p class="heading">Date: 2023-02-06 21:25</p>
+                <p class="heading">Date: 2023-02-06 21:38</p>
             </div>
         </footer>
     </body>

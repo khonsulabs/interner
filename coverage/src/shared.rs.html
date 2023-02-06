@@ -60,7 +60,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::fmt::Debug;</pre>
+                <pre class="has-background-white py-0 px-2">#[cfg(not(feature = &quot;fnv&quot;))]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -73,7 +73,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::hash::{BuildHasher, Hash};</pre>
+                <pre class="has-background-white py-0 px-2">use std::collections::hash_map::RandomState as DefaultHasher;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -86,7 +86,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::path::{Path, PathBuf};</pre>
+                <pre class="has-background-white py-0 px-2">use std::fmt::Debug;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -99,7 +99,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::sync::{Arc, Mutex};</pre>
+                <pre class="has-background-white py-0 px-2">use std::hash::{BuildHasher, Hash};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -112,7 +112,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">use std::path::{Path, PathBuf};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -125,7 +125,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use crate::pool::{Pool, PoolKindSealed};</pre>
+                <pre class="has-background-white py-0 px-2">use std::sync::{Arc, Mutex};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -138,7 +138,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use crate::{GlobalPool, PoolKind, Pooled};</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -151,7 +151,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">#[cfg(feature = &quot;fnv&quot;)]</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -164,7 +164,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">#[cfg(feature = &quot;fnv&quot;)]</pre>
+                <pre class="has-background-white py-0 px-2">use fnv::FnvBuildHasher as DefaultHasher;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -177,7 +177,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use fnv::FnvBuildHasher as DefaultHasher;</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -190,7 +190,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">#[cfg(not(feature = &quot;fnv&quot;))]</pre>
+                <pre class="has-background-white py-0 px-2">use crate::pool::{Pool, PoolKindSealed};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -203,7 +203,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use std::collections::hash_map::RandomState as DefaultHasher;</pre>
+                <pre class="has-background-white py-0 px-2">use crate::{GlobalPool, PoolKind, Pooled};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2397,7 +2397,7 @@
             </div>
             <div
                 class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                5
+                6
             </div>
             <div class="column has-background-success-light p-0">
                 <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
@@ -2410,7 +2410,7 @@
             </div>
             <div
                 class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                5
+                6
             </div>
             <div class="column has-background-success-light p-0">
                 <pre class="has-background-success-light py-0 px-2">        Arc::ptr_eq(&amp;self.0, &amp;other.0)</pre>
@@ -2423,7 +2423,7 @@
             </div>
             <div
                 class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                5
+                6
             </div>
             <div class="column has-background-success-light p-0">
                 <pre class="has-background-success-light py-0 px-2">    }</pre>
@@ -2527,7 +2527,7 @@
             </div>
             <div
                 class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                7
             </div>
             <div class="column has-background-success-light p-0">
                 <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;GlobalPool&lt;T&gt;) -&gt; bool {</pre>
@@ -2540,7 +2540,7 @@
             </div>
             <div
                 class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                7
             </div>
             <div class="column has-background-success-light p-0">
                 <pre class="has-background-success-light py-0 px-2">        false</pre>
@@ -2553,7 +2553,7 @@
             </div>
             <div
                 class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                7
             </div>
             <div class="column has-background-success-light p-0">
                 <pre class="has-background-success-light py-0 px-2">    }</pre>
@@ -2821,7 +2821,7 @@
         </div></div>
         <footer class="footer">
             <div class="content has-text-centered">
-                <p class="heading">Date: 2023-02-06 21:25</p>
+                <p class="heading">Date: 2023-02-06 21:38</p>
             </div>
         </footer>
     </body>
