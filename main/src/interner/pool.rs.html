@@ -210,29 +210,15 @@
 <a href="#210" id="210">210</a>
 <a href="#211" id="211">211</a>
 <a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
-<a href="#219" id="219">219</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::borrow::{Borrow, Cow};
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
-</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;hashbrown&quot;</span>))]
-</span><span class="kw">use </span>std::collections::HashSet;
+<span class="kw">use </span>std::collections::hash_map::RandomState;
+<span class="kw">use </span>std::collections::HashSet;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::hash::{BuildHasher, Hash};
 <span class="kw">use </span>std::marker::PhantomData;
 <span class="kw">use </span>std::path::{Path, PathBuf};
 <span class="kw">use </span>std::sync::atomic::AtomicBool;
 <span class="kw">use </span>std::sync::{atomic, Arc};
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;fnv&quot;</span>)]
-</span><span class="kw">use </span>fnv::FnvBuildHasher <span class="kw">as </span>DefaultHasher;
-<span class="attr">#[cfg(feature = <span class="string">&quot;hashbrown&quot;</span>)]
-</span><span class="kw">use </span>hashbrown::hash_set::HashSet;
 
 <span class="kw">use crate</span>::{PoolKind, Pooled};
 
@@ -424,13 +410,13 @@
     }
 }
 
-<span class="kw">impl</span>&lt;P&gt; Default <span class="kw">for </span>Pool&lt;P, DefaultHasher&gt;
+<span class="kw">impl</span>&lt;P&gt; Default <span class="kw">for </span>Pool&lt;P, RandomState&gt;
 <span class="kw">where
-    </span>P: PoolKind&lt;DefaultHasher&gt;,
+    </span>P: PoolKind&lt;RandomState&gt;,
 {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            active: HashSet::with_hasher(DefaultHasher::default()),
+            active: HashSet::with_hasher(RandomState::default()),
             slots: Vec::new(),
             free_slots: Vec::new(),
         }

@@ -208,46 +208,38 @@
 <a href="#208" id="208">208</a>
 <a href="#209" id="209">209</a>
 <a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::borrow::Cow;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
-</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
+<span class="kw">use </span>std::collections::hash_map::RandomState;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::hash::{BuildHasher, Hash};
 <span class="kw">use </span>std::path::{Path, PathBuf};
 <span class="kw">use </span>std::sync::{Arc, Mutex};
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fnv&quot;</span>)]
-</span><span class="kw">use </span>fnv::FnvBuildHasher <span class="kw">as </span>DefaultHasher;
-
 <span class="kw">use </span><span class="kw">crate</span>::pool::{Pool, PoolKindSealed};
 <span class="kw">use crate</span>::{GlobalPool, PoolKind, Pooled};
 
 <span class="doccomment">/// A pooled string that belongs to a [`StringPool`].
-</span><span class="kw">pub type </span>SharedString&lt;S = DefaultHasher&gt; = Pooled&lt;SharedPool&lt;String, S&gt;, S&gt;;
+</span><span class="kw">pub type </span>SharedString&lt;S = RandomState&gt; = Pooled&lt;SharedPool&lt;String, S&gt;, S&gt;;
 <span class="doccomment">/// A pooled path that belongs to a [`PathPool`].
-</span><span class="kw">pub type </span>SharedPath&lt;S = DefaultHasher&gt; = Pooled&lt;SharedPool&lt;PathBuf, S&gt;, S&gt;;
+</span><span class="kw">pub type </span>SharedPath&lt;S = RandomState&gt; = Pooled&lt;SharedPool&lt;PathBuf, S&gt;, S&gt;;
 <span class="doccomment">/// A pooled buffer that belongs to a [`BufferPool`].
-</span><span class="kw">pub type </span>SharedBuffer&lt;S = DefaultHasher&gt; = Pooled&lt;SharedPool&lt;Vec&lt;u8&gt;, S&gt;, S&gt;;
+</span><span class="kw">pub type </span>SharedBuffer&lt;S = RandomState&gt; = Pooled&lt;SharedPool&lt;Vec&lt;u8&gt;, S&gt;, S&gt;;
 
 <span class="doccomment">/// A string interning pool that manages [`SharedString`]s.
 ///
 /// Each [`StringPool`] has its own storage. When comparing [`SharedString`]s
 /// from separate pools, the full string comparison function must be used.
-</span><span class="kw">pub type </span>StringPool&lt;S = DefaultHasher&gt; = SharedPool&lt;String, S&gt;;
+</span><span class="kw">pub type </span>StringPool&lt;S = RandomState&gt; = SharedPool&lt;String, S&gt;;
 <span class="doccomment">/// A path interning pool that manages [`SharedPath`]s.
 ///
 /// Each [`PathPool`] has its own storage. When comparing [`SharedPath`]s
 /// from separate pools, the full string comparison function must be used.
-</span><span class="kw">pub type </span>PathPool&lt;S = DefaultHasher&gt; = SharedPool&lt;PathBuf, S&gt;;
+</span><span class="kw">pub type </span>PathPool&lt;S = RandomState&gt; = SharedPool&lt;PathBuf, S&gt;;
 <span class="doccomment">/// A path interning pool that manages [`SharedBuffer`]s.
 ///
 /// Each [`BufferPool`] has its own storage. When comparing [`SharedBuffer`]s
 /// from separate pools, the full string comparison function must be used.
-</span><span class="kw">pub type </span>BufferPool&lt;S = DefaultHasher&gt; = SharedPool&lt;Vec&lt;u8&gt;, S&gt;;
+</span><span class="kw">pub type </span>BufferPool&lt;S = RandomState&gt; = SharedPool&lt;Vec&lt;u8&gt;, S&gt;;
 
 <span class="doccomment">/// A shared pool of values that ensures only one copy of any given value exists
 /// at any time.
@@ -259,7 +251,7 @@
 /// - [`PathBuf`]/[`&amp;Path`](Path)
 /// - [`Vec&lt;u8&gt;`]/`&amp;[u8]`
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>SharedPool&lt;T, S = DefaultHasher&gt;(Arc&lt;Mutex&lt;Pool&lt;<span class="self">Self</span>, S&gt;&gt;&gt;)
+</span><span class="kw">pub struct </span>SharedPool&lt;T, S = RandomState&gt;(Arc&lt;Mutex&lt;Pool&lt;<span class="self">Self</span>, S&gt;&gt;&gt;)
 <span class="kw">where
     </span>T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher;
@@ -418,7 +410,7 @@
     </span>}
 }
 
-<span class="kw">impl</span>&lt;T&gt; Default <span class="kw">for </span>SharedPool&lt;T, DefaultHasher&gt;
+<span class="kw">impl</span>&lt;T&gt; Default <span class="kw">for </span>SharedPool&lt;T, RandomState&gt;
 <span class="kw">where
     </span>T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
 {

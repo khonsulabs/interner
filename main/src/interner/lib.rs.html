@@ -371,10 +371,6 @@
 <a href="#371" id="371">371</a>
 <a href="#372" id="372">372</a>
 <a href="#373" id="373">373</a>
-<a href="#374" id="374">374</a>
-<a href="#375" id="375">375</a>
-<a href="#376" id="376">376</a>
-<a href="#377" id="377">377</a>
 </pre><pre class="rust"><code><span class="attr">#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]
 #![forbid(unsafe_code)]
 #![warn(
@@ -405,26 +401,22 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests;
 
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
-</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;fnv&quot;</span>)]
-</span><span class="kw">use </span>fnv::FnvBuildHasher <span class="kw">as </span>DefaultHasher;
+<span class="kw">use </span>std::collections::hash_map::RandomState;
 
 <span class="kw">use </span><span class="kw">crate</span>::pool::{Pool, PoolKindSealed, SharedData};
 
 <span class="doccomment">/// A pooled string that is stored in a [`GlobalPool`].
 ///
 /// This type implements `From&lt;String&gt;` and `From&lt;&amp;str&gt;`.
-</span><span class="kw">pub type </span>GlobalString = Pooled&lt;GlobalPool&lt;String&gt;, DefaultHasher&gt;;
+</span><span class="kw">pub type </span>GlobalString = Pooled&lt;GlobalPool&lt;String&gt;, RandomState&gt;;
 <span class="doccomment">/// A pooled path that is stored in a [`GlobalPool`].
 ///
 /// This type implements `From&lt;PathBuf&gt;` and `From&lt;&amp;Path&gt;`.
-</span><span class="kw">pub type </span>GlobalPath = Pooled&lt;GlobalPool&lt;PathBuf&gt;, DefaultHasher&gt;;
+</span><span class="kw">pub type </span>GlobalPath = Pooled&lt;GlobalPool&lt;PathBuf&gt;, RandomState&gt;;
 <span class="doccomment">/// A pooled buffer (`Vec&lt;u8&gt;`) that is stored in a [`GlobalPool`].
 ///
 /// This type implements `From&lt;Vec&lt;u8&gt;&gt;` and `From&lt;&amp;[u8]&gt;`.
-</span><span class="kw">pub type </span>GlobalBuffer = Pooled&lt;GlobalPool&lt;Vec&lt;u8&gt;&gt;, DefaultHasher&gt;;
+</span><span class="kw">pub type </span>GlobalBuffer = Pooled&lt;GlobalPool&lt;Vec&lt;u8&gt;&gt;, RandomState&gt;;
 
 <span class="doccomment">/// A kind of interning pool. Currently there are only two types of pools:
 ///
@@ -467,19 +459,19 @@
 <span class="kw">trait </span>GlobalPoolAccess:
     Sized + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + <span class="lifetime">&#39;static
 </span><span class="kw">where
-    </span>GlobalPool&lt;<span class="self">Self</span>&gt;: PoolKind&lt;DefaultHasher, Stored = <span class="self">Self</span>&gt;,
+    </span>GlobalPool&lt;<span class="self">Self</span>&gt;: PoolKind&lt;RandomState, Stored = <span class="self">Self</span>&gt;,
 {
     <span class="kw">fn </span>storage() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPoolStorage&lt;<span class="self">Self</span>&gt;;
 }
 
 <span class="attr">#[derive(Debug)]
-</span><span class="kw">struct </span>GlobalPoolStorage&lt;T&gt;(Mutex&lt;<span class="prelude-ty">Option</span>&lt;Pool&lt;GlobalPool&lt;T&gt;, DefaultHasher&gt;&gt;&gt;)
+</span><span class="kw">struct </span>GlobalPoolStorage&lt;T&gt;(Mutex&lt;<span class="prelude-ty">Option</span>&lt;Pool&lt;GlobalPool&lt;T&gt;, RandomState&gt;&gt;&gt;)
 <span class="kw">where
-    </span>GlobalPool&lt;T&gt;: PoolKind&lt;DefaultHasher&gt;;
+    </span>GlobalPool&lt;T&gt;: PoolKind&lt;RandomState&gt;;
 
 <span class="kw">impl</span>&lt;T&gt; GlobalPoolStorage&lt;T&gt;
 <span class="kw">where
-    </span>GlobalPool&lt;T&gt;: PoolKind&lt;DefaultHasher&gt;,
+    </span>GlobalPool&lt;T&gt;: PoolKind&lt;RandomState&gt;,
 {
     <span class="kw">pub const fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Mutex::new(<span class="prelude-val">None</span>))
@@ -507,7 +499,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T&gt; PoolKind&lt;DefaultHasher&gt; <span class="kw">for </span>GlobalPool&lt;T&gt; <span class="kw">where </span>T: GlobalPoolAccess {}
+<span class="kw">impl</span>&lt;T&gt; PoolKind&lt;RandomState&gt; <span class="kw">for </span>GlobalPool&lt;T&gt; <span class="kw">where </span>T: GlobalPoolAccess {}
 
 <span class="kw">impl</span>&lt;T&gt; PartialEq <span class="kw">for </span>GlobalPool&lt;T&gt; {
     <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, _other: <span class="kw-2">&amp;</span>GlobalPool&lt;T&gt;) -&gt; bool {
@@ -515,13 +507,13 @@
     </span>}
 }
 
-<span class="kw">impl</span>&lt;T&gt; PoolKindSealed&lt;DefaultHasher&gt; <span class="kw">for </span>GlobalPool&lt;T&gt;
+<span class="kw">impl</span>&lt;T&gt; PoolKindSealed&lt;RandomState&gt; <span class="kw">for </span>GlobalPool&lt;T&gt;
 <span class="kw">where
     </span>T: GlobalPoolAccess,
 {
     <span class="kw">type </span>Stored = T;
 
-    <span class="kw">fn </span>with_active_symbols&lt;R&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, logic: <span class="kw">impl </span>FnOnce(<span class="kw-2">&amp;mut </span>Pool&lt;<span class="self">Self</span>, DefaultHasher&gt;) -&gt; R) -&gt; R {
+    <span class="kw">fn </span>with_active_symbols&lt;R&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, logic: <span class="kw">impl </span>FnOnce(<span class="kw-2">&amp;mut </span>Pool&lt;<span class="self">Self</span>, RandomState&gt;) -&gt; R) -&gt; R {
         <span class="kw">let </span><span class="kw-2">mut </span>symbols = T::storage().<span class="number">0</span>.lock().expect(<span class="string">&quot;poisoned&quot;</span>);
         <span class="kw">if </span>symbols.is_none() {
             <span class="kw-2">*</span>symbols = <span class="prelude-val">Some</span>(Pool::default());
