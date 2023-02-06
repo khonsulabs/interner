@@ -369,6 +369,12 @@
 <a href="#369" id="369">369</a>
 <a href="#370" id="370">370</a>
 <a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
 </pre><pre class="rust"><code><span class="attr">#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]
 #![forbid(unsafe_code)]
 #![warn(
@@ -399,12 +405,13 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests;
 
-<span class="kw">use </span><span class="kw">crate</span>::pool::{Pool, PoolKindSealed, SharedData};
+<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
+</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;fnv&quot;</span>)]
 </span><span class="kw">use </span>fnv::FnvBuildHasher <span class="kw">as </span>DefaultHasher;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
-</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
+
+<span class="kw">use </span><span class="kw">crate</span>::pool::{Pool, PoolKindSealed, SharedData};
 
 <span class="doccomment">/// A pooled string that is stored in a [`GlobalPool`].
 ///
@@ -552,7 +559,12 @@
     ///
     /// This function never compares the contents of the contained values.
     </span><span class="attr">#[must_use]
-    </span><span class="kw">pub fn </span>ptr_eq(this: <span class="kw-2">&amp;</span><span class="self">Self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+    </span><span class="kw">pub fn </span>ptr_eq&lt;P2, S2&gt;(this: <span class="kw-2">&amp;</span><span class="self">Self</span>, other: <span class="kw-2">&amp;</span>Pooled&lt;P2, S2&gt;) -&gt; bool
+    <span class="kw">where
+        </span>P: PartialEq&lt;P2&gt;,
+        P2: PoolKind&lt;S2&gt;,
+        S2: BuildHasher,
+    {
         this.<span class="number">0 </span>.<span class="number">0</span>.pool == other.<span class="number">0 </span>.<span class="number">0</span>.pool &amp;&amp; this.<span class="number">0 </span>.<span class="number">0</span>.index == other.<span class="number">0 </span>.<span class="number">0</span>.index
     }
 }

@@ -213,18 +213,18 @@
 <a href="#213" id="213">213</a>
 <a href="#214" id="214">214</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::borrow::Cow;
+<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
+</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::hash::{BuildHasher, Hash};
 <span class="kw">use </span>std::path::{Path, PathBuf};
 <span class="kw">use </span>std::sync::{Arc, Mutex};
 
-<span class="kw">use </span><span class="kw">crate</span>::pool::{Pool, PoolKindSealed};
-<span class="kw">use crate</span>::{GlobalPool, PoolKind, Pooled};
-
 <span class="attr">#[cfg(feature = <span class="string">&quot;fnv&quot;</span>)]
 </span><span class="kw">use </span>fnv::FnvBuildHasher <span class="kw">as </span>DefaultHasher;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
-</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
+
+<span class="kw">use </span><span class="kw">crate</span>::pool::{Pool, PoolKindSealed};
+<span class="kw">use crate</span>::{GlobalPool, PoolKind, Pooled};
 
 <span class="doccomment">/// A pooled string that belongs to a [`StringPool`].
 </span><span class="kw">pub type </span>SharedString&lt;S = DefaultHasher&gt; = Pooled&lt;SharedPool&lt;String, S&gt;, S&gt;;

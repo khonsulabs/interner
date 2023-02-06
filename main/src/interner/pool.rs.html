@@ -217,8 +217,11 @@
 <a href="#217" id="217">217</a>
 <a href="#218" id="218">218</a>
 <a href="#219" id="219">219</a>
-<a href="#220" id="220">220</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::borrow::{Borrow, Cow};
+<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
+</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
+<span class="attr">#[cfg(not(feature = <span class="string">&quot;hashbrown&quot;</span>))]
+</span><span class="kw">use </span>std::collections::HashSet;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::hash::{BuildHasher, Hash};
 <span class="kw">use </span>std::marker::PhantomData;
@@ -228,13 +231,8 @@
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;fnv&quot;</span>)]
 </span><span class="kw">use </span>fnv::FnvBuildHasher <span class="kw">as </span>DefaultHasher;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;fnv&quot;</span>))]
-</span><span class="kw">use </span>std::collections::hash_map::RandomState <span class="kw">as </span>DefaultHasher;
-
 <span class="attr">#[cfg(feature = <span class="string">&quot;hashbrown&quot;</span>)]
 </span><span class="kw">use </span>hashbrown::hash_set::HashSet;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;hashbrown&quot;</span>))]
-</span><span class="kw">use </span>std::collections::HashSet;
 
 <span class="kw">use crate</span>::{PoolKind, Pooled};
 
