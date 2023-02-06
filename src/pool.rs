@@ -1,7 +1,5 @@
 use std::borrow::{Borrow, Cow};
-#[cfg(not(feature = "fnv"))]
-use std::collections::hash_map::RandomState as DefaultHasher;
-#[cfg(not(feature = "hashbrown"))]
+use std::collections::hash_map::RandomState;
 use std::collections::HashSet;
 use std::fmt::Debug;
 use std::hash::{BuildHasher, Hash};
@@ -9,11 +7,6 @@ use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicBool;
 use std::sync::{atomic, Arc};
-
-#[cfg(feature = "fnv")]
-use fnv::FnvBuildHasher as DefaultHasher;
-#[cfg(feature = "hashbrown")]
-use hashbrown::hash_set::HashSet;
 
 use crate::{PoolKind, Pooled};
 
@@ -205,13 +198,13 @@ where
     }
 }
 
-impl<P> Default for Pool<P, DefaultHasher>
+impl<P> Default for Pool<P, RandomState>
 where
-    P: PoolKind<DefaultHasher>,
+    P: PoolKind<RandomState>,
 {
     fn default() -> Self {
         Self {
-            active: HashSet::with_hasher(DefaultHasher::default()),
+            active: HashSet::with_hasher(RandomState::default()),
             slots: Vec::new(),
             free_slots: Vec::new(),
         }

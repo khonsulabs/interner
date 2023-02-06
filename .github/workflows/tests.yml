@@ -16,10 +16,6 @@ jobs:
         run: |
           cargo clippy
 
-      - name: Run unit tests with default features
-        run: |
-          cargo test --all-targets
-
       - name: Run unit tests with all features
         run: |
           cargo test --all-features --all-targets

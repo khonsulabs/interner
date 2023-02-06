@@ -1,39 +1,35 @@
 use std::borrow::Cow;
-#[cfg(not(feature = "fnv"))]
-use std::collections::hash_map::RandomState as DefaultHasher;
+use std::collections::hash_map::RandomState;
 use std::fmt::Debug;
 use std::hash::{BuildHasher, Hash};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
-#[cfg(feature = "fnv")]
-use fnv::FnvBuildHasher as DefaultHasher;
-
 use crate::pool::{Pool, PoolKindSealed};
 use crate::{GlobalPool, PoolKind, Pooled};
 
 /// A pooled string that belongs to a [`StringPool`].
-pub type SharedString<S = DefaultHasher> = Pooled<SharedPool<String, S>, S>;
+pub type SharedString<S = RandomState> = Pooled<SharedPool<String, S>, S>;
 /// A pooled path that belongs to a [`PathPool`].
-pub type SharedPath<S = DefaultHasher> = Pooled<SharedPool<PathBuf, S>, S>;
+pub type SharedPath<S = RandomState> = Pooled<SharedPool<PathBuf, S>, S>;
 /// A pooled buffer that belongs to a [`BufferPool`].
-pub type SharedBuffer<S = DefaultHasher> = Pooled<SharedPool<Vec<u8>, S>, S>;
+pub type SharedBuffer<S = RandomState> = Pooled<SharedPool<Vec<u8>, S>, S>;
 
 /// A string interning pool that manages [`SharedString`]s.
 ///
 /// Each [`StringPool`] has its own storage. When comparing [`SharedString`]s
 /// from separate pools, the full string comparison function must be used.
-pub type StringPool<S = DefaultHasher> = SharedPool<String, S>;
+pub type StringPool<S = RandomState> = SharedPool<String, S>;
 /// A path interning pool that manages [`SharedPath`]s.
 ///
 /// Each [`PathPool`] has its own storage. When comparing [`SharedPath`]s
 /// from separate pools, the full string comparison function must be used.
-pub type PathPool<S = DefaultHasher> = SharedPool<PathBuf, S>;
+pub type PathPool<S = RandomState> = SharedPool<PathBuf, S>;
 /// A path interning pool that manages [`SharedBuffer`]s.
 ///
 /// Each [`BufferPool`] has its own storage. When comparing [`SharedBuffer`]s
 /// from separate pools, the full string comparison function must be used.
-pub type BufferPool<S = DefaultHasher> = SharedPool<Vec<u8>, S>;
+pub type BufferPool<S = RandomState> = SharedPool<Vec<u8>, S>;
 
 /// A shared pool of values that ensures only one copy of any given value exists
 /// at any time.
@@ -45,7 +41,7 @@ pub type BufferPool<S = DefaultHasher> = SharedPool<Vec<u8>, S>;
 /// - [`PathBuf`]/[`&Path`](Path)
 /// - [`Vec<u8>`]/`&[u8]`
 #[derive(Debug)]
-pub struct SharedPool<T, S = DefaultHasher>(Arc<Mutex<Pool<Self, S>>>)
+pub struct SharedPool<T, S = RandomState>(Arc<Mutex<Pool<Self, S>>>)
 where
     T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher;
@@ -204,7 +200,7 @@ where
     }
 }
 
-impl<T> Default for SharedPool<T, DefaultHasher>
+impl<T> Default for SharedPool<T, RandomState>
 where
     T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
 {

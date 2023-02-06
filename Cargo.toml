@@ -9,9 +9,5 @@ repository = "https://github.com/khonsulabs/pot"
 keywords = ["string-interner", "interner", "symbols"]
 categories = ["encoding"]
 
-[dependencies]
-fnv = { version = "1.0.7", optional = true }
-hashbrown = { version = "0.13.2", optional = true }
-
 [workspace]
 members = ["xtask"]

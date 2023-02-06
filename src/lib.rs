@@ -28,26 +28,22 @@ pub mod shared;
 #[cfg(test)]
 mod tests;
 
-#[cfg(not(feature = "fnv"))]
-use std::collections::hash_map::RandomState as DefaultHasher;
-
-#[cfg(feature = "fnv")]
-use fnv::FnvBuildHasher as DefaultHasher;
+use std::collections::hash_map::RandomState;
 
 use crate::pool::{Pool, PoolKindSealed, SharedData};
 
 /// A pooled string that is stored in a [`GlobalPool`].
 ///
 /// This type implements `From<String>` and `From<&str>`.
-pub type GlobalString = Pooled<GlobalPool<String>, DefaultHasher>;
+pub type GlobalString = Pooled<GlobalPool<String>, RandomState>;
 /// A pooled path that is stored in a [`GlobalPool`].
 ///
 /// This type implements `From<PathBuf>` and `From<&Path>`.
-pub type GlobalPath = Pooled<GlobalPool<PathBuf>, DefaultHasher>;
+pub type GlobalPath = Pooled<GlobalPool<PathBuf>, RandomState>;
 /// A pooled buffer (`Vec<u8>`) that is stored in a [`GlobalPool`].
 ///
 /// This type implements `From<Vec<u8>>` and `From<&[u8]>`.
-pub type GlobalBuffer = Pooled<GlobalPool<Vec<u8>>, DefaultHasher>;
+pub type GlobalBuffer = Pooled<GlobalPool<Vec<u8>>, RandomState>;
 
 /// A kind of interning pool. Currently there are only two types of pools:
 ///
@@ -90,19 +86,19 @@ impl GlobalPool<Vec<u8>> {
 trait GlobalPoolAccess:
     Sized + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static
 where
-    GlobalPool<Self>: PoolKind<DefaultHasher, Stored = Self>,
+    GlobalPool<Self>: PoolKind<RandomState, Stored = Self>,
 {
     fn storage() -> &'static GlobalPoolStorage<Self>;
 }
 
 #[derive(Debug)]
-struct GlobalPoolStorage<T>(Mutex<Option<Pool<GlobalPool<T>, DefaultHasher>>>)
+struct GlobalPoolStorage<T>(Mutex<Option<Pool<GlobalPool<T>, RandomState>>>)
 where
-    GlobalPool<T>: PoolKind<DefaultHasher>;
+    GlobalPool<T>: PoolKind<RandomState>;
 
 impl<T> GlobalPoolStorage<T>
 where
-    GlobalPool<T>: PoolKind<DefaultHasher>,
+    GlobalPool<T>: PoolKind<RandomState>,
 {
     pub const fn new() -> Self {
         Self(Mutex::new(None))
@@ -130,7 +126,7 @@ impl GlobalPoolAccess for Vec<u8> {
     }
 }
 
-impl<T> PoolKind<DefaultHasher> for GlobalPool<T> where T: GlobalPoolAccess {}
+impl<T> PoolKind<RandomState> for GlobalPool<T> where T: GlobalPoolAccess {}
 
 impl<T> PartialEq for GlobalPool<T> {
     fn eq(&self, _other: &GlobalPool<T>) -> bool {
@@ -138,13 +134,13 @@ impl<T> PartialEq for GlobalPool<T> {
     }
 }
 
-impl<T> PoolKindSealed<DefaultHasher> for GlobalPool<T>
+impl<T> PoolKindSealed<RandomState> for GlobalPool<T>
 where
     T: GlobalPoolAccess,
 {
     type Stored = T;
 
-    fn with_active_symbols<R>(&self, logic: impl FnOnce(&mut Pool<Self, DefaultHasher>) -> R) -> R {
+    fn with_active_symbols<R>(&self, logic: impl FnOnce(&mut Pool<Self, RandomState>) -> R) -> R {
         let mut symbols = T::storage().0.lock().expect("poisoned");
         if symbols.is_none() {
             *symbols = Some(Pool::default());

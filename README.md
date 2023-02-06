@@ -1,8 +1,34 @@
 # interner
 
-A interning crate for Rust with no dependencies by default and no unsafe code
+A interning crate for Rust with no dependencies and no unsafe code
 (`#![forbid(unsafe_code)]`). Most existing interning crates only offer interning
 strings. This crate allows interning paths and byte buffers as well.
+
+## How this crate works
+
+This crate uses a `HashSet` and a `Vec` to store its entries. When a value is
+looked up, if it cannot be found in the `HashSet`, it is assigned a slot in the
+`Vec`. Future lookups will return a clone to the `Arc`-wrapped data.
+
+When the final reference to a `Pooled<T>` value is dropped, the pool's `HashMap`
+has the value removed and the `Vec`'s slot is made available for re-use.
+
+## `Hash` for Pooled Values
+
+The `Pooled<T>` type implements `Hash` by hashing its internal unique id rather
+than using `T::hash()`. This allows pooled objects to be used as efficent keys
+in hash maps and sets.
+
+Because `T::hash()` is different than `Pooled<T>::hash()`, `Pooled<T>` does not
+implement `Borrow<T>`. This prevents using an `&str` to look up a value in a
+`HashMap`.
+
+Another important caveat of using `Pooled<T>` values as keys in a hash-based
+collection is that all `Pooled<T>` values must be from the same pool. Using
+values from separate pools will cause lookups to be unable to find the contained
+keys in most situations. When using this unsupported flow, incorrect matches
+will never occur because `Pooled<T>::eq()` is implemented to verify the values
+are from the same pool, otherwise the underlying values are compared.
 
 ## Globally Interned Strings
 

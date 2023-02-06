@@ -1,3 +1,4 @@
+use std::collections::hash_map::RandomState;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::thread;
@@ -112,10 +113,9 @@ fn hashing() {
 }
 
 #[test]
-#[cfg(feature = "fnv")]
 fn with_hasher() {
     let mut set = HashSet::new();
-    let shared = StringPool::with_hasher(fnv::FnvBuildHasher::default());
+    let shared = StringPool::with_hasher(RandomState::default());
     set.insert(shared.get("hello"));
     assert!(set.contains(&shared.get("hello")));
     assert!(!set.contains(&shared.get("world")));
