@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"interner":[["impl&lt;T, S&gt; Freeze for <a class=\"struct\" href=\"interner/shared/struct.SharedPool.html\" title=\"struct interner::shared::SharedPool\">SharedPool</a>&lt;T, S&gt;",1,["interner::shared::SharedPool"]],["impl&lt;T&gt; Freeze for <a class=\"struct\" href=\"interner/struct.GlobalPool.html\" title=\"struct interner::GlobalPool\">GlobalPool</a>&lt;T&gt;",1,["interner::GlobalPool"]],["impl&lt;P, S&gt; Freeze for <a class=\"struct\" href=\"interner/struct.Pooled.html\" title=\"struct interner::Pooled\">Pooled</a>&lt;P, S&gt;",1,["interner::Pooled"]]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
