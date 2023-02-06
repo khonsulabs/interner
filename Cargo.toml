@@ -1,0 +1,17 @@
+[package]
+name = "interner"
+version = "0.1.0"
+edition = "2021"
+description = "A string, path, and buffer internment crate with no dependencies."
+license = "MIT OR Apache-2.0"
+readme = "../README.md"
+repository = "https://github.com/khonsulabs/pot"
+keywords = ["string-interner", "interner", "symbols"]
+categories = ["encoding"]
+
+[dependencies]
+fnv = { version = "1.0.7", optional = true }
+hashbrown = { version = "0.13.2", optional = true }
+
+[workspace]
+members = ["xtask"]
