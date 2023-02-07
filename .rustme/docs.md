@@ -1,11 +1,3 @@
-# interner
-
-![interner forbids unsafe code](https://img.shields.io/badge/unsafe-forbid-success)
-[![crate version](https://img.shields.io/crates/v/interner.svg)](https://crates.io/crates/interner)
-[![Live Build Status](https://img.shields.io/github/actions/workflow/status/khonsulabs/interner/tests.yml?branch=main)](https://github.com/khonsulabs/interner/actions?query=workflow:Tests)
-[![HTML Coverage Report for `main` branch](https://khonsulabs.github.io/interner/coverage/badge.svg)](https://khonsulabs.github.io/interner/coverage/)
-[![Documentation](https://img.shields.io/badge/docs-main-informational)](https://khonsulabs.github.io/interner/main/interner)
-
 An interning crate for Rust with no dependencies and no unsafe code
 (`#![forbid(unsafe_code)]`). Most existing interning crates only offer interning
 strings. This crate allows interning paths and byte buffers as well.
@@ -118,11 +110,3 @@ let other_copy = pool.get(b"hello".to_vec());
 // Both `my_path` and `other_copy` are pointing to the same underlying path.
 assert!(SharedBuffer::ptr_eq(&my_buffer, &other_copy));
 ```
-
-## Open-source Licenses
-
-This project, like all projects from [Khonsu Labs](https://khonsulabs.com/), are
-open-source. This repository is available under the [MIT License](./LICENSE-MIT)
-or the [Apache License 2.0](./LICENSE-APACHE).
-
-To learn more about contributing, please see [CONTRIBUTING.md](./CONTRIBUTING.md).
