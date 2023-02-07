@@ -193,21 +193,6 @@
 <a href="#193" id="193">193</a>
 <a href="#194" id="194">194</a>
 <a href="#195" id="195">195</a>
-<a href="#196" id="196">196</a>
-<a href="#197" id="197">197</a>
-<a href="#198" id="198">198</a>
-<a href="#199" id="199">199</a>
-<a href="#200" id="200">200</a>
-<a href="#201" id="201">201</a>
-<a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
-<a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
-<a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::borrow::Cow;
 <span class="kw">use </span>std::collections::hash_map::RandomState;
 <span class="kw">use </span>std::fmt::Debug;
@@ -215,8 +200,9 @@
 <span class="kw">use </span>std::path::{Path, PathBuf};
 <span class="kw">use </span>std::sync::{Arc, Mutex};
 
+<span class="kw">use </span><span class="kw">crate</span>::global::GlobalPool;
 <span class="kw">use </span><span class="kw">crate</span>::pool::{Pool, PoolKindSealed};
-<span class="kw">use crate</span>::{GlobalPool, PoolKind, Pooled};
+<span class="kw">use crate</span>::{PoolKind, Pooled};
 
 <span class="doccomment">/// A pooled string that belongs to a [`StringPool`].
 </span><span class="kw">pub type </span>SharedString&lt;S = RandomState&gt; = Pooled&lt;SharedPool&lt;String, S&gt;, S&gt;;
@@ -244,8 +230,8 @@
 <span class="doccomment">/// A shared pool of values that ensures only one copy of any given value exists
 /// at any time.
 ///
-/// To retrieve a [`Pooled`] value, use [`SharedPool::get()`] or
-/// [`SharedPool::get_from_owned`], which are implemented for these types:
+/// To retrieve a [`Pooled`] value, use [`SharedPool::get()`], which is
+/// implemented for these types:
 ///
 /// - [`String`]/[`&amp;str`](str)
 /// - [`PathBuf`]/[`&amp;Path`](Path)
@@ -284,18 +270,12 @@
     /// While any copies of the returned [`SharedString`] are still allocated,
     /// calling this function is guaranteed to return a copy of the same string.
     </span><span class="attr">#[must_use]
-    </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, borrowed: <span class="kw-2">&amp;</span>str) -&gt; SharedString&lt;S&gt; {
-        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), <span class="self">self</span>))
-    }
-
-    <span class="doccomment">/// Returns a copy of an existing [`SharedString`] if one is found.
-    /// Otherwise, a new [`SharedString`] is created and returned.
-    ///
-    /// While any copies of the returned [`SharedString`] are still allocated,
-    /// calling this function is guaranteed to return a copy of the same string.
-    </span><span class="attr">#[must_use]
-    </span><span class="kw">pub fn </span>get_from_owned(<span class="kw-2">&amp;</span><span class="self">self</span>, owned: String) -&gt; SharedString&lt;S&gt; {
-        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get::&lt;str&gt;(Cow::Owned(owned), <span class="self">self</span>))
+    </span><span class="kw">pub fn </span>get&lt;<span class="lifetime">&#39;a</span>, V&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, value: V) -&gt; SharedString&lt;S&gt;
+    <span class="kw">where
+        </span>V: Into&lt;Cow&lt;<span class="lifetime">&#39;a</span>, str&gt;&gt;,
+    {
+        <span class="kw">let </span>value = value.into();
+        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get(value, <span class="self">self</span>))
     }
 }
 
@@ -309,18 +289,12 @@
     /// While any copies of the returned [`SharedPath`] are still allocated,
     /// calling this function is guaranteed to return a copy of the same path.
     </span><span class="attr">#[must_use]
-    </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, borrowed: <span class="kw-2">&amp;</span>Path) -&gt; SharedPath&lt;S&gt; {
-        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), <span class="self">self</span>))
-    }
-
-    <span class="doccomment">/// Returns a copy of an existing [`SharedPath`] if one is found. Otherwise,
-    /// a new [`SharedPath`] is created and returned.
-    ///
-    /// While any copies of the returned [`SharedPath`] are still allocated,
-    /// calling this function is guaranteed to return a copy of the same path.
-    </span><span class="attr">#[must_use]
-    </span><span class="kw">pub fn </span>get_from_owned(<span class="kw-2">&amp;</span><span class="self">self</span>, owned: PathBuf) -&gt; SharedPath&lt;S&gt; {
-        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get::&lt;Path&gt;(Cow::Owned(owned), <span class="self">self</span>))
+    </span><span class="kw">pub fn </span>get&lt;<span class="lifetime">&#39;a</span>, V&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, value: V) -&gt; SharedPath&lt;S&gt;
+    <span class="kw">where
+        </span>V: Into&lt;Cow&lt;<span class="lifetime">&#39;a</span>, Path&gt;&gt;,
+    {
+        <span class="kw">let </span>value = value.into();
+        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get(value, <span class="self">self</span>))
     }
 }
 
@@ -334,18 +308,12 @@
     /// While any copies of the returned [`SharedBuffer`] are still allocated,
     /// calling this function is guaranteed to return a copy of the same buffer.
     </span><span class="attr">#[must_use]
-    </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, borrowed: <span class="kw-2">&amp;</span>[u8]) -&gt; SharedBuffer&lt;S&gt; {
-        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), <span class="self">self</span>))
-    }
-
-    <span class="doccomment">/// Returns a copy of an existing [`SharedBuffer`] if one is found. Otherwise,
-    /// a new [`SharedBuffer`] is created and returned.
-    ///
-    /// While any copies of the returned [`SharedBuffer`] are still allocated,
-    /// calling this function is guaranteed to return a copy of the same buffer.
-    </span><span class="attr">#[must_use]
-    </span><span class="kw">pub fn </span>get_from_owned(<span class="kw-2">&amp;</span><span class="self">self</span>, owned: Vec&lt;u8&gt;) -&gt; SharedBuffer&lt;S&gt; {
-        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get::&lt;[u8]&gt;(Cow::Owned(owned), <span class="self">self</span>))
+    </span><span class="kw">pub fn </span>get&lt;<span class="lifetime">&#39;a</span>, V&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, value: V) -&gt; SharedBuffer&lt;S&gt;
+    <span class="kw">where
+        </span>V: Into&lt;Cow&lt;<span class="lifetime">&#39;a</span>, [u8]&gt;&gt;,
+    {
+        <span class="kw">let </span>value = value.into();
+        <span class="self">self</span>.with_active_symbols(|symbols| symbols.get(value, <span class="self">self</span>))
     }
 }
 
@@ -390,20 +358,22 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T, S&gt; PartialEq&lt;GlobalPool&lt;T&gt;&gt; <span class="kw">for </span>SharedPool&lt;T, S&gt;
+<span class="kw">impl</span>&lt;T, S, S2&gt; PartialEq&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;T, S2&gt;&gt; <span class="kw">for </span>SharedPool&lt;T, S&gt;
 <span class="kw">where
     </span>T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
+    S2: BuildHasher,
 {
-    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, _other: <span class="kw-2">&amp;</span>GlobalPool&lt;T&gt;) -&gt; bool {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, _other: &amp;&amp;<span class="lifetime">&#39;static </span>GlobalPool&lt;T, S2&gt;) -&gt; bool {
         <span class="bool-val">false
     </span>}
 }
 
-<span class="kw">impl</span>&lt;T, S&gt; PartialEq&lt;SharedPool&lt;T, S&gt;&gt; <span class="kw">for </span>GlobalPool&lt;T&gt;
+<span class="kw">impl</span>&lt;T, S, S2&gt; PartialEq&lt;SharedPool&lt;T, S&gt;&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;T, S2&gt;
 <span class="kw">where
     </span>T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
+    S2: BuildHasher,
 {
     <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, _other: <span class="kw-2">&amp;</span>SharedPool&lt;T, S&gt;) -&gt; bool {
         <span class="bool-val">false
