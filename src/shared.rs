@@ -5,8 +5,9 @@ use std::hash::{BuildHasher, Hash};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
+use crate::global::GlobalPool;
 use crate::pool::{Pool, PoolKindSealed};
-use crate::{GlobalPool, PoolKind, Pooled};
+use crate::{PoolKind, Pooled};
 
 /// A pooled string that belongs to a [`StringPool`].
 pub type SharedString<S = RandomState> = Pooled<SharedPool<String, S>, S>;
@@ -34,8 +35,8 @@ pub type BufferPool<S = RandomState> = SharedPool<Vec<u8>, S>;
 /// A shared pool of values that ensures only one copy of any given value exists
 /// at any time.
 ///
-/// To retrieve a [`Pooled`] value, use [`SharedPool::get()`] or
-/// [`SharedPool::get_from_owned`], which are implemented for these types:
+/// To retrieve a [`Pooled`] value, use [`SharedPool::get()`], which is
+/// implemented for these types:
 ///
 /// - [`String`]/[`&str`](str)
 /// - [`PathBuf`]/[`&Path`](Path)
@@ -74,18 +75,12 @@ where
     /// While any copies of the returned [`SharedString`] are still allocated,
     /// calling this function is guaranteed to return a copy of the same string.
     #[must_use]
-    pub fn get(&self, borrowed: &str) -> SharedString<S> {
-        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))
-    }
-
-    /// Returns a copy of an existing [`SharedString`] if one is found.
-    /// Otherwise, a new [`SharedString`] is created and returned.
-    ///
-    /// While any copies of the returned [`SharedString`] are still allocated,
-    /// calling this function is guaranteed to return a copy of the same string.
-    #[must_use]
-    pub fn get_from_owned(&self, owned: String) -> SharedString<S> {
-        self.with_active_symbols(|symbols| symbols.get::<str>(Cow::Owned(owned), self))
+    pub fn get<'a, V>(&self, value: V) -> SharedString<S>
+    where
+        V: Into<Cow<'a, str>>,
+    {
+        let value = value.into();
+        self.with_active_symbols(|symbols| symbols.get(value, self))
     }
 }
 
@@ -99,18 +94,12 @@ where
     /// While any copies of the returned [`SharedPath`] are still allocated,
     /// calling this function is guaranteed to return a copy of the same path.
     #[must_use]
-    pub fn get(&self, borrowed: &Path) -> SharedPath<S> {
-        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))
-    }
-
-    /// Returns a copy of an existing [`SharedPath`] if one is found. Otherwise,
-    /// a new [`SharedPath`] is created and returned.
-    ///
-    /// While any copies of the returned [`SharedPath`] are still allocated,
-    /// calling this function is guaranteed to return a copy of the same path.
-    #[must_use]
-    pub fn get_from_owned(&self, owned: PathBuf) -> SharedPath<S> {
-        self.with_active_symbols(|symbols| symbols.get::<Path>(Cow::Owned(owned), self))
+    pub fn get<'a, V>(&self, value: V) -> SharedPath<S>
+    where
+        V: Into<Cow<'a, Path>>,
+    {
+        let value = value.into();
+        self.with_active_symbols(|symbols| symbols.get(value, self))
     }
 }
 
@@ -124,18 +113,12 @@ where
     /// While any copies of the returned [`SharedBuffer`] are still allocated,
     /// calling this function is guaranteed to return a copy of the same buffer.
     #[must_use]
-    pub fn get(&self, borrowed: &[u8]) -> SharedBuffer<S> {
-        self.with_active_symbols(|symbols| symbols.get(Cow::Borrowed(borrowed), self))
-    }
-
-    /// Returns a copy of an existing [`SharedBuffer`] if one is found. Otherwise,
-    /// a new [`SharedBuffer`] is created and returned.
-    ///
-    /// While any copies of the returned [`SharedBuffer`] are still allocated,
-    /// calling this function is guaranteed to return a copy of the same buffer.
-    #[must_use]
-    pub fn get_from_owned(&self, owned: Vec<u8>) -> SharedBuffer<S> {
-        self.with_active_symbols(|symbols| symbols.get::<[u8]>(Cow::Owned(owned), self))
+    pub fn get<'a, V>(&self, value: V) -> SharedBuffer<S>
+    where
+        V: Into<Cow<'a, [u8]>>,
+    {
+        let value = value.into();
+        self.with_active_symbols(|symbols| symbols.get(value, self))
     }
 }
 
@@ -180,20 +163,22 @@ where
     }
 }
 
-impl<T, S> PartialEq<GlobalPool<T>> for SharedPool<T, S>
+impl<T, S, S2> PartialEq<&'static GlobalPool<T, S2>> for SharedPool<T, S>
 where
     T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
+    S2: BuildHasher,
 {
-    fn eq(&self, _other: &GlobalPool<T>) -> bool {
+    fn eq(&self, _other: &&'static GlobalPool<T, S2>) -> bool {
         false
     }
 }
 
-impl<T, S> PartialEq<SharedPool<T, S>> for GlobalPool<T>
+impl<T, S, S2> PartialEq<SharedPool<T, S>> for &'static GlobalPool<T, S2>
 where
     T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
+    S2: BuildHasher,
 {
     fn eq(&self, _other: &SharedPool<T, S>) -> bool {
         false

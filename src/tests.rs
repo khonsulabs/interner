@@ -1,31 +1,36 @@
 use std::collections::hash_map::RandomState;
 use std::collections::HashSet;
+use std::hash::{BuildHasher, Hasher};
 use std::path::{Path, PathBuf};
 use std::thread;
 
-use crate::pool::PoolKindSealed;
+use crate::global::GlobalPool;
 use crate::shared::{SharedPool, SharedString, StringPool};
-use crate::{GlobalBuffer, GlobalPath, GlobalPool, GlobalString, Pooled};
+use crate::Pooled;
+
+static GLOBAL_STRINGS: GlobalPool<String> = GlobalPool::new();
+static GLOBAL_PATHS: GlobalPool<PathBuf> = GlobalPool::new();
+static GLOBAL_BUFFERS: GlobalPool<Vec<u8>> = GlobalPool::new();
 
 #[test]
 fn basics() {
-    let first_symbol = GlobalString::from("basics-test-symbol");
+    let first_symbol = GLOBAL_STRINGS.get("basics-test-symbol");
     let slot = first_symbol.0 .0.index;
-    let first_again = GlobalString::from(String::from("basics-test-symbol"));
+    let first_again = GLOBAL_STRINGS.get(String::from("basics-test-symbol"));
     assert_eq!(slot, first_again.0 .0.index);
     assert_eq!(first_symbol, first_again);
     assert_eq!(first_symbol, "basics-test-symbol");
     assert_eq!(first_symbol.to_string(), "basics-test-symbol");
     drop(first_again);
     // Dropping the second copy shouldn't free the underlying symbol
-    GlobalPool::strings().with_active_symbols(|symbols| {
+    GLOBAL_STRINGS.with_active_symbols(|symbols| {
         assert!(symbols.active.contains("basics-test-symbol"));
         assert!(!symbols.slots.is_empty());
         assert!(symbols.slots[slot].is_some());
         assert!(!symbols.free_slots.iter().any(|free| *free == slot));
     });
     drop(first_symbol);
-    GlobalPool::strings().with_active_symbols(|symbols| {
+    GLOBAL_STRINGS.with_active_symbols(|symbols| {
         assert!(!symbols.active.contains("basics-test-symbol"));
         match &symbols.slots[slot] {
             Some(new_symbol) => {
@@ -45,11 +50,11 @@ fn basics() {
 fn shared_is_separate() {
     // First get a global string to ensure that we get a non-zero index for the
     // string that will have the same contents as the local pool.
-    let first_symbol = GlobalString::from("shared-is-separate-ignored");
-    let from_global = GlobalString::from("shared_is_separate");
+    let first_symbol = GLOBAL_STRINGS.get("shared-is-separate-ignored");
+    let from_global = GLOBAL_STRINGS.get("shared_is_separate");
     // Create our local pool and request the same string.
     let shared = SharedPool::<String>::default();
-    let from_shared = shared.get_from_owned(String::from("shared_is_separate"));
+    let from_shared = shared.get(String::from("shared_is_separate"));
     // Verify that the strings are indeed different.
     assert!(!Pooled::ptr_eq(&from_shared, &from_global));
     let from_shared_borrowed = shared.get("shared_is_separate");
@@ -68,11 +73,11 @@ fn shared_is_separate() {
 
 #[test]
 fn paths() {
-    let first_symbol = GlobalPath::from(PathBuf::from("ignored-global-path"));
+    let first_symbol = GLOBAL_PATHS.get(PathBuf::from("ignored-global-path"));
     assert_eq!(first_symbol, Path::new("ignored-global-path"));
-    let from_global = GlobalPath::from("shared_is_separate_path");
+    let from_global = GLOBAL_PATHS.get(Path::new("shared_is_separate_path"));
     let shared = SharedPool::<PathBuf>::default();
-    let from_shared = shared.get_from_owned(PathBuf::from("shared_is_separate_path"));
+    let from_shared = shared.get(PathBuf::from("shared_is_separate_path"));
     assert_ne!(from_shared.0 .0.index, from_global.0 .0.index);
     let from_shared_borrowed = shared.get(Path::new("shared_is_separate_path"));
     assert_eq!(from_shared.0 .0.index, from_shared_borrowed.0 .0.index);
@@ -84,13 +89,14 @@ fn paths() {
     assert_ne!(first_symbol, from_shared);
     assert_ne!(from_shared, first_symbol);
 }
+
 #[test]
 fn buffers() {
-    let first_symbol = GlobalBuffer::from(b"ignored-global-buffer".to_vec());
+    let first_symbol = GLOBAL_BUFFERS.get(b"ignored-global-buffer".to_vec());
     assert_eq!(first_symbol, &b"ignored-global-buffer"[..]);
-    let from_global = GlobalBuffer::from(b"shared_is_separate_buffer");
+    let from_global = GLOBAL_BUFFERS.get(&b"shared_is_separate_buffer"[..]);
     let shared = SharedPool::<Vec<u8>>::default();
-    let from_shared = shared.get_from_owned(b"shared_is_separate_buffer".to_vec());
+    let from_shared = shared.get(b"shared_is_separate_buffer".to_vec());
     assert_ne!(from_shared.0 .0.index, from_global.0 .0.index);
     let from_shared_borrowed = shared.get(&b"shared_is_separate_buffer"[..]);
     assert_eq!(from_shared.0 .0.index, from_shared_borrowed.0 .0.index);
@@ -130,7 +136,7 @@ fn multithreaded_reaquire() {
     for _ in 0..4 {
         threads.push(thread::spawn(|| {
             for _ in 0..1000 {
-                let _ = GlobalString::from("multithreaded");
+                let _ = GLOBAL_STRINGS.get("multithreaded");
             }
         }));
     }
@@ -138,7 +144,7 @@ fn multithreaded_reaquire() {
         t.join().unwrap();
     }
     // The failure case for the code would end up not freing the string.
-    GlobalPool::strings().with_active_symbols(|symbols| {
+    GLOBAL_STRINGS.with_active_symbols(|symbols| {
         assert!(!symbols.active.contains("multithreaded"));
     });
 }
@@ -153,4 +159,35 @@ fn ptr_eq() {
     assert!(!SharedString::ptr_eq(&from_a, &from_b));
 
     assert!(SharedString::ptr_eq(&from_a, &pool_a.get("hello")));
+}
+
+#[test]
+fn custom_global_pool() {
+    #[derive(Default, Clone)]
+    struct BadHasher(u8);
+    impl Hasher for BadHasher {
+        fn finish(&self) -> u64 {
+            u64::from(self.0)
+        }
+
+        fn write(&mut self, bytes: &[u8]) {
+            for byte in bytes {
+                self.0 ^= *byte;
+            }
+        }
+    }
+
+    impl BuildHasher for BadHasher {
+        type Hasher = BadHasher;
+
+        fn build_hasher(&self) -> Self::Hasher {
+            self.clone()
+        }
+    }
+
+    static CUSTOM_POOL: GlobalPool<String, BadHasher> = GlobalPool::with_hasher(BadHasher(0));
+
+    let from_custom = CUSTOM_POOL.get("hello");
+    let global = GLOBAL_STRINGS.get("hello");
+    assert!(!Pooled::ptr_eq(&from_custom, &global));
 }

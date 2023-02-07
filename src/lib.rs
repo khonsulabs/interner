@@ -14,141 +14,30 @@
     clippy::module_name_repetitions
 )]
 
-use std::borrow::Cow;
 use std::fmt::{Debug, Display};
 use std::hash::{BuildHasher, Hash};
-use std::marker::PhantomData;
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
 
+/// Global interning pools.
+pub mod global;
 mod pool;
 /// Shared interning pools that have no global state.
 pub mod shared;
 #[cfg(test)]
 mod tests;
 
-use std::collections::hash_map::RandomState;
-
-use crate::pool::{Pool, PoolKindSealed, SharedData};
-
-/// A pooled string that is stored in a [`GlobalPool`].
-///
-/// This type implements `From<String>` and `From<&str>`.
-pub type GlobalString = Pooled<GlobalPool<String>, RandomState>;
-/// A pooled path that is stored in a [`GlobalPool`].
-///
-/// This type implements `From<PathBuf>` and `From<&Path>`.
-pub type GlobalPath = Pooled<GlobalPool<PathBuf>, RandomState>;
-/// A pooled buffer (`Vec<u8>`) that is stored in a [`GlobalPool`].
-///
-/// This type implements `From<Vec<u8>>` and `From<&[u8]>`.
-pub type GlobalBuffer = Pooled<GlobalPool<Vec<u8>>, RandomState>;
+use crate::pool::{PoolKindSealed, SharedData};
 
 /// A kind of interning pool. Currently there are only two types of pools:
 ///
-/// - Global, used through the [`GlobalString`], [`GlobalPath`], and
-///   [`GlobalBuffer`] types.
+/// - Global, used through the [`global::StringPool`],
+///   [`GlobalPath`](global::GlobalPath), and
+///   [`GlobalBuffer`](global::GlobalBuffer) types.
 /// - Shared, used through the [`StringPool`](shared::StringPool),
 ///   [`PathPool`](shared::PathPool), and [`BufferPool`](shared::BufferPool)
 ///   types.
 pub trait PoolKind<S>: Clone + PartialEq + PoolKindSealed<S> {}
-
-/// A global interning pool.
-///
-/// This type isn't used directly. Instead, use the [`GlobalString`],
-/// [`GlobalPath`], and [`GlobalBuffer`] to intern values in shared global
-/// pools.
-#[derive(Clone, Debug)]
-pub struct GlobalPool<T>(PhantomData<T>);
-
-impl GlobalPool<String> {
-    #[must_use]
-    const fn strings() -> Self {
-        Self(PhantomData)
-    }
-}
-
-impl GlobalPool<PathBuf> {
-    #[must_use]
-    const fn paths() -> Self {
-        Self(PhantomData)
-    }
-}
-
-impl GlobalPool<Vec<u8>> {
-    #[must_use]
-    const fn buffers() -> Self {
-        Self(PhantomData)
-    }
-}
-
-trait GlobalPoolAccess:
-    Sized + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static
-where
-    GlobalPool<Self>: PoolKind<RandomState, Stored = Self>,
-{
-    fn storage() -> &'static GlobalPoolStorage<Self>;
-}
-
-#[derive(Debug)]
-struct GlobalPoolStorage<T>(Mutex<Option<Pool<GlobalPool<T>, RandomState>>>)
-where
-    GlobalPool<T>: PoolKind<RandomState>;
-
-impl<T> GlobalPoolStorage<T>
-where
-    GlobalPool<T>: PoolKind<RandomState>,
-{
-    pub const fn new() -> Self {
-        Self(Mutex::new(None))
-    }
-}
-
-impl GlobalPoolAccess for String {
-    fn storage() -> &'static GlobalPoolStorage<Self> {
-        static GLOBAL_STRINGS: GlobalPoolStorage<String> = GlobalPoolStorage::new();
-        &GLOBAL_STRINGS
-    }
-}
-
-impl GlobalPoolAccess for PathBuf {
-    fn storage() -> &'static GlobalPoolStorage<Self> {
-        static GLOBAL_PATHS: GlobalPoolStorage<PathBuf> = GlobalPoolStorage::new();
-        &GLOBAL_PATHS
-    }
-}
-
-impl GlobalPoolAccess for Vec<u8> {
-    fn storage() -> &'static GlobalPoolStorage<Self> {
-        static GLOBAL_BUFFERS: GlobalPoolStorage<Vec<u8>> = GlobalPoolStorage::new();
-        &GLOBAL_BUFFERS
-    }
-}
-
-impl<T> PoolKind<RandomState> for GlobalPool<T> where T: GlobalPoolAccess {}
-
-impl<T> PartialEq for GlobalPool<T> {
-    fn eq(&self, _other: &GlobalPool<T>) -> bool {
-        true
-    }
-}
-
-impl<T> PoolKindSealed<RandomState> for GlobalPool<T>
-where
-    T: GlobalPoolAccess,
-{
-    type Stored = T;
-
-    fn with_active_symbols<R>(&self, logic: impl FnOnce(&mut Pool<Self, RandomState>) -> R) -> R {
-        let mut symbols = T::storage().0.lock().expect("poisoned");
-        if symbols.is_none() {
-            *symbols = Some(Pool::default());
-        }
-
-        logic(symbols.as_mut().expect("always initialized"))
-    }
-}
 
 /// A type that ensures only one copy of each value exists in its pool, enabling
 /// quicker lookups by not requiring full comparisons.
@@ -240,63 +129,6 @@ where
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&**self, f)
-    }
-}
-
-impl<'a> From<&'a str> for GlobalString {
-    fn from(sym: &'a str) -> Self {
-        GlobalPool::strings()
-            .with_active_symbols(|symbols| symbols.get(Cow::Borrowed(sym), &GlobalPool::strings()))
-    }
-}
-
-impl From<String> for GlobalString {
-    fn from(sym: String) -> Self {
-        GlobalPool::strings().with_active_symbols(|symbols| {
-            symbols.get::<str>(Cow::Owned(sym), &GlobalPool::strings())
-        })
-    }
-}
-
-impl<'a> From<&'a str> for GlobalPath {
-    fn from(sym: &'a str) -> Self {
-        Self::from(Path::new(sym))
-    }
-}
-
-impl<'a> From<&'a Path> for GlobalPath {
-    fn from(sym: &'a Path) -> Self {
-        GlobalPool::paths()
-            .with_active_symbols(|symbols| symbols.get(Cow::Borrowed(sym), &GlobalPool::paths()))
-    }
-}
-
-impl From<PathBuf> for GlobalPath {
-    fn from(sym: PathBuf) -> Self {
-        GlobalPool::paths().with_active_symbols(|symbols| {
-            symbols.get::<Path>(Cow::Owned(sym), &GlobalPool::paths())
-        })
-    }
-}
-
-impl<'a> From<&'a [u8]> for GlobalBuffer {
-    fn from(sym: &'a [u8]) -> Self {
-        GlobalPool::buffers()
-            .with_active_symbols(|symbols| symbols.get(Cow::Borrowed(sym), &GlobalPool::buffers()))
-    }
-}
-
-impl From<Vec<u8>> for GlobalBuffer {
-    fn from(sym: Vec<u8>) -> Self {
-        GlobalPool::buffers().with_active_symbols(|symbols| {
-            symbols.get::<[u8]>(Cow::Owned(sym), &GlobalPool::buffers())
-        })
-    }
-}
-
-impl<'a, const N: usize> From<&'a [u8; N]> for GlobalBuffer {
-    fn from(sym: &'a [u8; N]) -> Self {
-        Self::from(&sym[0..N])
     }
 }
 
