@@ -6,7 +6,7 @@ use std::thread;
 
 use crate::global::GlobalPool;
 use crate::shared::{SharedPool, SharedString, StringPool};
-use crate::Pooled;
+use crate::{pool::PoolKindSealed, Pooled};
 
 static GLOBAL_STRINGS: GlobalPool<String> = GlobalPool::new();
 static GLOBAL_PATHS: GlobalPool<PathBuf> = GlobalPool::new();
@@ -23,14 +23,14 @@ fn basics() {
     assert_eq!(first_symbol.to_string(), "basics-test-symbol");
     drop(first_again);
     // Dropping the second copy shouldn't free the underlying symbol
-    GLOBAL_STRINGS.with_active_symbols(|symbols| {
+    (&GLOBAL_STRINGS).with_active_symbols(|symbols| {
         assert!(symbols.active.contains("basics-test-symbol"));
         assert!(!symbols.slots.is_empty());
         assert!(symbols.slots[slot].is_some());
         assert!(!symbols.free_slots.iter().any(|free| *free == slot));
     });
     drop(first_symbol);
-    GLOBAL_STRINGS.with_active_symbols(|symbols| {
+    (&GLOBAL_STRINGS).with_active_symbols(|symbols| {
         assert!(!symbols.active.contains("basics-test-symbol"));
         match &symbols.slots[slot] {
             Some(new_symbol) => {
@@ -144,7 +144,7 @@ fn multithreaded_reaquire() {
         t.join().unwrap();
     }
     // The failure case for the code would end up not freing the string.
-    GLOBAL_STRINGS.with_active_symbols(|symbols| {
+    (&GLOBAL_STRINGS).with_active_symbols(|symbols| {
         assert!(!symbols.active.contains("multithreaded"));
     });
 }

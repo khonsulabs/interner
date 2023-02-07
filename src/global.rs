@@ -157,29 +157,6 @@ where
             hasher: init,
         }))
     }
-
-    pub(crate) fn with_active_symbols<R>(
-        &self,
-        logic: impl FnOnce(&mut Pool<&'static GlobalPool<T, S>, S>) -> R,
-    ) -> R {
-        let mut symbols = self.0.lock().expect("poisoned");
-        if !matches!(*symbols, GlobalPoolState::Initialized(_)) {
-            let pool = match std::mem::replace(&mut *symbols, GlobalPoolState::Initializing) {
-                GlobalPoolState::LazyInitialize { capacity, hasher } => {
-                    Pool::with_capacity_and_hasher(capacity, hasher())
-                }
-                GlobalPoolState::StaticInitialize { capacity, hasher } => {
-                    Pool::with_capacity_and_hasher(capacity, hasher)
-                }
-
-                _ => unreachable!("invalid state"),
-            };
-            *symbols = GlobalPoolState::Initialized(pool);
-        }
-
-        let GlobalPoolState::Initialized(pool) = &mut *symbols else { unreachable!("always initialized above") };
-        logic(pool)
-    }
 }
 
 impl<S> GlobalPool<String, S>
