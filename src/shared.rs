@@ -47,6 +47,26 @@ where
     T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher;
 
+impl<T, S> SharedPool<T, S>
+where
+    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    S: BuildHasher,
+{
+    /// Returns a collection of the currently pooled items.
+    #[must_use]
+    pub fn pooled<C>(&self) -> C
+    where
+        C: FromIterator<Pooled<Self, S>>,
+    {
+        self.with_active_symbols(|pool| {
+            pool.active
+                .iter()
+                .map(|data| Pooled(data.clone()))
+                .collect()
+        })
+    }
+}
+
 impl<S> SharedPool<String, S>
 where
     S: BuildHasher,

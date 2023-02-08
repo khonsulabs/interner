@@ -14,10 +14,12 @@
     clippy::module_name_repetitions
 )]
 
+use std::collections::hash_set;
 use std::fmt::{Debug, Display};
 use std::hash::{BuildHasher, Hash};
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 /// Global interning pools.
 pub mod global;
@@ -73,6 +75,15 @@ where
         S2: BuildHasher,
     {
         this.0 .0.pool == other.0 .0.pool && this.0 .0.index == other.0 .0.index
+    }
+
+    /// Returns a pointer to the underlying storage.
+    ///
+    /// This function is not intended to be used outside of testing this crate's
+    /// functionality.
+    #[must_use]
+    pub fn as_ptr(this: &Self) -> *const () {
+        Arc::as_ptr(&this.0 .0).cast()
     }
 }
 
@@ -217,3 +228,9 @@ where
         self == *other
     }
 }
+
+/// An iterator over a interned pool.
+pub struct Iter<'a, T, S>(hash_set::Iter<'a, SharedData<T, S>>)
+where
+    T: PoolKind<S>,
+    S: BuildHasher;

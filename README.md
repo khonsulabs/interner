@@ -19,6 +19,9 @@ looked up, if it cannot be found in the `HashSet`, it is assigned a slot in the
 When the final reference to a `Pooled<T>` value is dropped, the pool's `HashMap`
 has the value removed and the `Vec`'s slot is made available for re-use.
 
+This crate does not do sub-value interning. Each value is stored independently
+with its own allocation.
+
 ## `Hash` for Pooled Values
 
 The `Pooled<T>` type implements `Hash` by hashing its internal unique id rather

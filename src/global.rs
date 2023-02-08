@@ -77,6 +77,25 @@ where
         Self::with_capacity_and_hasher_init(0, RandomState::new)
     }
 }
+impl<T, S> GlobalPool<T, S>
+where
+    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    S: BuildHasher,
+{
+    /// Returns a collection of the currently pooled items.
+    #[must_use]
+    pub fn pooled<C>(&'static self) -> C
+    where
+        C: FromIterator<Pooled<&'static Self, S>>,
+    {
+        self.with_active_symbols(|pool| {
+            pool.active
+                .iter()
+                .map(|data| Pooled(data.clone()))
+                .collect()
+        })
+    }
+}
 impl<T, S, S2> PartialEq<GlobalPool<T, S2>> for GlobalPool<T, S>
 where
     T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
@@ -185,7 +204,19 @@ where
     ///
     /// The string is not initialized until it is retrieved for the first time.
     pub const fn get_static(&'static self, value: &'static str) -> StaticPooledString<S> {
-        StaticPooledString(RwLock::new(StaticPooledState::Uninitialized(self, value)))
+        StaticPooledString(RwLock::new(StaticStringState::Uninitialized(self, value)))
+    }
+
+    /// Returns a static pooled string, which keeps the pooled string allocated
+    /// for the duration of the process. The string is initialized using the
+    /// function provided when it is retrieved for the first time.
+    pub const fn get_static_with(
+        &'static self,
+        function: fn() -> Cow<'static, str>,
+    ) -> StaticPooledString<S> {
+        StaticPooledString(RwLock::new(StaticStringState::UninitializedFn(
+            self, function,
+        )))
     }
 }
 
@@ -206,12 +237,27 @@ where
         self.with_active_symbols(|symbols| symbols.get(value, &self))
     }
 
+    // This function serves no purpose, currently, as there's no way to get a
+    // static path in a const context -- Path::new() isn't const.
+
+    // /// Returns a static pooled path, which keeps the pooled path allocated for
+    // /// the duration of the process.
+    // ///
+    // /// The path is not initialized until it is retrieved for the first time.
+    // pub const fn get_static(&'static self, value: &'static Path) -> StaticPooledPath<S> {
+    //     StaticPooledPath(RwLock::new(StaticPathState::Uninitialized(self, value)))
+    // }
+
     /// Returns a static pooled path, which keeps the pooled path allocated for
-    /// the duration of the process.
-    ///
-    /// The path is not initialized until it is retrieved for the first time.
-    pub const fn get_static(&'static self, value: &'static Path) -> StaticPooledPath<S> {
-        StaticPooledPath(RwLock::new(StaticPooledState::Uninitialized(self, value)))
+    /// the duration of the process. The path is initialized using the function
+    /// provided when it is retrieved for the first time.
+    pub const fn get_static_with(
+        &'static self,
+        function: fn() -> Cow<'static, Path>,
+    ) -> StaticPooledPath<S> {
+        StaticPooledPath(RwLock::new(StaticPathState::UninitializedFn(
+            self, function,
+        )))
     }
 }
 
@@ -238,30 +284,42 @@ where
     ///
     /// The buffer is not initialized until it is retrieved for the first time.
     pub const fn get_static(&'static self, value: &'static [u8]) -> StaticPooledBuffer<S> {
-        StaticPooledBuffer(RwLock::new(StaticPooledState::Uninitialized(self, value)))
+        StaticPooledBuffer(RwLock::new(StaticBufferState::Uninitialized(self, value)))
+    }
+
+    /// Returns a static pooled buffer, which keeps the pooled buffer allocated
+    /// for the duration of the process. The buffer is initialized using the
+    /// function provided when it is retrieved for the first time.
+    pub const fn get_static_with(
+        &'static self,
+        function: fn() -> Cow<'static, [u8]>,
+    ) -> StaticPooledBuffer<S> {
+        StaticPooledBuffer(RwLock::new(StaticBufferState::UninitializedFn(
+            self, function,
+        )))
     }
 }
 
 /// A lazily-initialized [`GlobalString`] that stays allocated for the duration
 /// of the process.
-pub struct StaticPooledString<S = RandomState>(RwLock<StaticPooledState<String, str, S>>)
+pub struct StaticPooledString<S = RandomState>(RwLock<StaticStringState<S>>)
 where
     S: BuildHasher + 'static;
 
 /// A lazily-initialized [`GlobalBuffer`] that stays allocated for the duration
 /// of the process.
-pub struct StaticPooledBuffer<S = RandomState>(RwLock<StaticPooledState<Vec<u8>, [u8], S>>)
+pub struct StaticPooledBuffer<S = RandomState>(RwLock<StaticBufferState<S>>)
 where
     S: BuildHasher + 'static;
 
 /// A lazily-initialized [`GlobalPath`] that stays allocated for the duration
 /// of the process.
-pub struct StaticPooledPath<S = RandomState>(RwLock<StaticPooledState<PathBuf, Path, S>>)
+pub struct StaticPooledPath<S = RandomState>(RwLock<StaticPathState<S>>)
 where
     S: BuildHasher + 'static;
 
 macro_rules! impl_static_pooled {
-    ($name:ident, $pooled:ident) => {
+    ($name:ident, $pooled:ident, $statename:ident, $owned:ty, $borrowed:ty) => {
         impl<S> $name<S>
         where
             S: BuildHasher + 'static,
@@ -278,7 +336,7 @@ macro_rules! impl_static_pooled {
                 // First, assume this is initialized, since once we've initialized, this
                 // is the positive flow for the remainder of the program.
                 let state = self.0.read().expect("poisoned");
-                if let StaticPooledState::Initialized(value) = &*state {
+                if let $statename::Initialized(value) = &*state {
                     return value.clone();
                 }
                 drop(state);
@@ -288,29 +346,48 @@ macro_rules! impl_static_pooled {
                 // initialization to save more effort.
                 let mut state = self.0.write().expect("poisoned");
                 match &*state {
-                    StaticPooledState::Uninitialized(pool, value) => {
+                    $statename::Uninitialized(pool, value) => {
                         let value = pool.get(*value);
-                        *state = StaticPooledState::Initialized(value.clone());
+                        *state = $statename::Initialized(value.clone());
                         value
                     }
-                    StaticPooledState::Initialized(value) => value.clone(),
+                    $statename::UninitializedFn(pool, function) => {
+                        let value = pool.get(function());
+                        *state = $statename::Initialized(value.clone());
+                        value
+                    }
+                    $statename::Initialized(value) => value.clone(),
                 }
             }
+        }
+
+        #[allow(dead_code)] // Path can't use the Uninitialized variant.
+        enum $statename<S>
+        where
+            S: BuildHasher + 'static,
+        {
+            Initialized(Pooled<&'static GlobalPool<$owned, S>, S>),
+            Uninitialized(&'static GlobalPool<$owned, S>, &'static $borrowed),
+            UninitializedFn(
+                &'static GlobalPool<$owned, S>,
+                fn() -> Cow<'static, $borrowed>,
+            ),
         }
     };
 }
 
-impl_static_pooled!(StaticPooledString, GlobalString);
-impl_static_pooled!(StaticPooledBuffer, GlobalBuffer);
-impl_static_pooled!(StaticPooledPath, GlobalPath);
-
-enum StaticPooledState<Owned, Borrowed, S>
-where
-    Owned: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
-    Borrowed: ?Sized + 'static,
-    &'static GlobalPool<Owned, S>: PoolKind<S>,
-    S: BuildHasher + 'static,
-{
-    Uninitialized(&'static GlobalPool<Owned, S>, &'static Borrowed),
-    Initialized(Pooled<&'static GlobalPool<Owned, S>, S>),
-}
+impl_static_pooled!(
+    StaticPooledString,
+    GlobalString,
+    StaticStringState,
+    String,
+    str
+);
+impl_static_pooled!(
+    StaticPooledBuffer,
+    GlobalBuffer,
+    StaticBufferState,
+    Vec<u8>,
+    [u8]
+);
+impl_static_pooled!(StaticPooledPath, GlobalPath, StaticPathState, PathBuf, Path);
