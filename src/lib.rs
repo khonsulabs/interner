@@ -14,7 +14,6 @@
     clippy::module_name_repetitions
 )]
 
-use std::collections::hash_set;
 use std::fmt::{Debug, Display};
 use std::hash::{BuildHasher, Hash};
 use std::ops::Deref;
@@ -218,9 +217,3 @@ where
         self == *other
     }
 }
-
-/// An iterator over a interned pool.
-pub struct Iter<'a, T, S>(hash_set::Iter<'a, SharedData<T, S>>)
-where
-    T: PoolKind<S>,
-    S: BuildHasher;
