@@ -217,6 +217,23 @@
 <a href="#217" id="217">217</a>
 <a href="#218" id="218">218</a>
 <a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
 </pre><pre class="rust"><code><span class="attr">#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]
 #![forbid(unsafe_code)]
 #![warn(
@@ -233,10 +250,12 @@
     clippy::module_name_repetitions
 )]
 
-</span><span class="kw">use </span>std::fmt::{Debug, Display};
+</span><span class="kw">use </span>std::collections::hash_set;
+<span class="kw">use </span>std::fmt::{Debug, Display};
 <span class="kw">use </span>std::hash::{BuildHasher, Hash};
 <span class="kw">use </span>std::ops::Deref;
 <span class="kw">use </span>std::path::{Path, PathBuf};
+<span class="kw">use </span>std::sync::Arc;
 
 <span class="doccomment">/// Global interning pools.
 </span><span class="kw">pub mod </span>global;
@@ -292,6 +311,15 @@
         S2: BuildHasher,
     {
         this.<span class="number">0 </span>.<span class="number">0</span>.pool == other.<span class="number">0 </span>.<span class="number">0</span>.pool &amp;&amp; this.<span class="number">0 </span>.<span class="number">0</span>.index == other.<span class="number">0 </span>.<span class="number">0</span>.index
+    }
+
+    <span class="doccomment">/// Returns a pointer to the underlying storage.
+    ///
+    /// This function is not intended to be used outside of testing this crate&#39;s
+    /// functionality.
+    </span><span class="attr">#[must_use]
+    </span><span class="kw">pub fn </span>as_ptr(this: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="kw-2">*const </span>() {
+        Arc::as_ptr(<span class="kw-2">&amp;</span>this.<span class="number">0 </span>.<span class="number">0</span>).cast()
     }
 }
 
@@ -436,5 +464,11 @@
         <span class="self">self </span>== <span class="kw-2">*</span>other
     }
 }
+
+<span class="doccomment">/// An iterator over a interned pool.
+</span><span class="kw">pub struct </span>Iter&lt;<span class="lifetime">&#39;a</span>, T, S&gt;(hash_set::Iter&lt;<span class="lifetime">&#39;a</span>, SharedData&lt;T, S&gt;&gt;)
+<span class="kw">where
+    </span>T: PoolKind&lt;S&gt;,
+    S: BuildHasher;
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="interner" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0 (fc594f156 2023-01-24)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
