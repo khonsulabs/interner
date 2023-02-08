@@ -243,6 +243,9 @@ fn statics() {
             let second_ptr = Arc::as_ptr(&second.0 .0);
             assert_eq!(first_ptr, second_ptr);
             assert_eq!(second, $against);
+
+            assert_eq!($static, second);
+            assert_eq!(second, $static);
         }};
     }
 

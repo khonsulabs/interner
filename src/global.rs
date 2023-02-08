@@ -302,18 +302,21 @@ where
 
 /// A lazily-initialized [`GlobalString`] that stays allocated for the duration
 /// of the process.
+#[derive(Debug)]
 pub struct StaticPooledString<S = RandomState>(RwLock<StaticStringState<S>>)
 where
     S: BuildHasher + 'static;
 
 /// A lazily-initialized [`GlobalBuffer`] that stays allocated for the duration
 /// of the process.
+#[derive(Debug)]
 pub struct StaticPooledBuffer<S = RandomState>(RwLock<StaticBufferState<S>>)
 where
     S: BuildHasher + 'static;
 
 /// A lazily-initialized [`GlobalPath`] that stays allocated for the duration
 /// of the process.
+#[derive(Debug)]
 pub struct StaticPooledPath<S = RandomState>(RwLock<StaticPathState<S>>)
 where
     S: BuildHasher + 'static;
@@ -324,20 +327,12 @@ macro_rules! impl_static_pooled {
         where
             S: BuildHasher + 'static,
         {
-            /// Returns a reference-counted clone of the contained resource.
-            ///
-            /// If this is the first time the contents are accessed, the value
-            /// will be initialized from the pool on the first access. This
-            /// requires synchronization and can block the current thraed very
-            /// briefly.
-            ///
-            /// All subsequent accesses will be non-blocking.
-            pub fn get(&self) -> $pooled<S> {
+            fn map<F: for<'a> FnOnce(&'a $pooled<S>) -> R, R>(&self, map: F) -> R {
                 // First, assume this is initialized, since once we've initialized, this
                 // is the positive flow for the remainder of the program.
                 let state = self.0.read().expect("poisoned");
                 if let $statename::Initialized(value) = &*state {
-                    return value.clone();
+                    return map(value);
                 }
                 drop(state);
 
@@ -348,19 +343,34 @@ macro_rules! impl_static_pooled {
                 match &*state {
                     $statename::Uninitialized(pool, value) => {
                         let value = pool.get(*value);
-                        *state = $statename::Initialized(value.clone());
-                        value
+                        let result = map(&value);
+                        *state = $statename::Initialized(value);
+                        result
                     }
                     $statename::UninitializedFn(pool, function) => {
                         let value = pool.get(function());
-                        *state = $statename::Initialized(value.clone());
-                        value
+                        let result = map(&value);
+                        *state = $statename::Initialized(value);
+                        result
                     }
-                    $statename::Initialized(value) => value.clone(),
+                    $statename::Initialized(value) => map(value),
                 }
+            }
+
+            /// Returns a reference-counted clone of the contained resource.
+            ///
+            /// If this is the first time the contents are accessed, the value
+            /// will be initialized from the pool on the first access. This
+            /// requires synchronization and can block the current thraed very
+            /// briefly.
+            ///
+            /// All subsequent accesses will be non-blocking.
+            pub fn get(&self) -> $pooled<S> {
+                self.map($pooled::clone)
             }
         }
 
+        #[derive(Debug)]
         #[allow(dead_code)] // Path can't use the Uninitialized variant.
         enum $statename<S>
         where
@@ -372,6 +382,26 @@ macro_rules! impl_static_pooled {
                 &'static GlobalPool<$owned, S>,
                 fn() -> Cow<'static, $borrowed>,
             ),
+        }
+
+        impl<S, S2> PartialEq<Pooled<&'static GlobalPool<$owned, S2>, S2>> for $name<S>
+        where
+            S: BuildHasher,
+            S2: BuildHasher,
+        {
+            fn eq(&self, other: &Pooled<&'static GlobalPool<$owned, S2>, S2>) -> bool {
+                self.map(|stored| stored == other)
+            }
+        }
+
+        impl<S, S2> PartialEq<$name<S>> for Pooled<&'static GlobalPool<$owned, S2>, S2>
+        where
+            S: BuildHasher,
+            S2: BuildHasher,
+        {
+            fn eq(&self, other: &$name<S>) -> bool {
+                other.map(|stored| self == stored)
+            }
         }
     };
 }
