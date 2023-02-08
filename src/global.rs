@@ -3,7 +3,7 @@ use std::collections::hash_map::RandomState;
 use std::fmt::Debug;
 use std::hash::{BuildHasher, Hash};
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
+use std::sync::{Mutex, RwLock};
 
 use crate::pool::{Pool, PoolKindSealed};
 use crate::{PoolKind, Pooled};
@@ -114,6 +114,10 @@ where
         let GlobalPoolState::Initialized(pool) = &mut *symbols else { unreachable!("always initialized above") };
         logic(pool)
     }
+
+    fn address_of(&self) -> *const () {
+        std::ptr::addr_of!(*self).cast()
+    }
 }
 
 impl<T, S> PoolKind<S> for &'static GlobalPool<T, S>
@@ -175,6 +179,14 @@ where
         let value = value.into();
         self.with_active_symbols(|symbols| symbols.get(value, &self))
     }
+
+    /// Returns a static pooled string, which keeps the pooled string allocated
+    /// for the duration of the process.
+    ///
+    /// The string is not initialized until it is retrieved for the first time.
+    pub const fn get_static(&'static self, value: &'static str) -> StaticPooledString<S> {
+        StaticPooledString(RwLock::new(StaticPooledState::Uninitialized(self, value)))
+    }
 }
 
 impl<S> GlobalPool<PathBuf, S>
@@ -192,6 +204,14 @@ where
     {
         let value = value.into();
         self.with_active_symbols(|symbols| symbols.get(value, &self))
+    }
+
+    /// Returns a static pooled path, which keeps the pooled path allocated for
+    /// the duration of the process.
+    ///
+    /// The path is not initialized until it is retrieved for the first time.
+    pub const fn get_static(&'static self, value: &'static Path) -> StaticPooledPath<S> {
+        StaticPooledPath(RwLock::new(StaticPooledState::Uninitialized(self, value)))
     }
 }
 
@@ -212,4 +232,85 @@ where
         let value = value.into();
         self.with_active_symbols(|symbols| symbols.get(value, &self))
     }
+
+    /// Returns a static pooled buffer, which keeps the pooled buffer allocated for
+    /// the duration of the process.
+    ///
+    /// The buffer is not initialized until it is retrieved for the first time.
+    pub const fn get_static(&'static self, value: &'static [u8]) -> StaticPooledBuffer<S> {
+        StaticPooledBuffer(RwLock::new(StaticPooledState::Uninitialized(self, value)))
+    }
+}
+
+/// A lazily-initialized [`GlobalString`] that stays allocated for the duration
+/// of the process.
+pub struct StaticPooledString<S = RandomState>(RwLock<StaticPooledState<String, str, S>>)
+where
+    S: BuildHasher + 'static;
+
+/// A lazily-initialized [`GlobalBuffer`] that stays allocated for the duration
+/// of the process.
+pub struct StaticPooledBuffer<S = RandomState>(RwLock<StaticPooledState<Vec<u8>, [u8], S>>)
+where
+    S: BuildHasher + 'static;
+
+/// A lazily-initialized [`GlobalPath`] that stays allocated for the duration
+/// of the process.
+pub struct StaticPooledPath<S = RandomState>(RwLock<StaticPooledState<PathBuf, Path, S>>)
+where
+    S: BuildHasher + 'static;
+
+macro_rules! impl_static_pooled {
+    ($name:ident, $pooled:ident) => {
+        impl<S> $name<S>
+        where
+            S: BuildHasher + 'static,
+        {
+            /// Returns a reference-counted clone of the contained resource.
+            ///
+            /// If this is the first time the contents are accessed, the value
+            /// will be initialized from the pool on the first access. This
+            /// requires synchronization and can block the current thraed very
+            /// briefly.
+            ///
+            /// All subsequent accesses will be non-blocking.
+            pub fn get(&self) -> $pooled<S> {
+                // First, assume this is initialized, since once we've initialized, this
+                // is the positive flow for the remainder of the program.
+                let state = self.0.read().expect("poisoned");
+                if let StaticPooledState::Initialized(value) = &*state {
+                    return value.clone();
+                }
+                drop(state);
+
+                // We weren't initialized, but we may be racing with another thread to
+                // acquire the write() permission to the RwLock. We should re-check for
+                // initialization to save more effort.
+                let mut state = self.0.write().expect("poisoned");
+                match &*state {
+                    StaticPooledState::Uninitialized(pool, value) => {
+                        let value = pool.get(*value);
+                        *state = StaticPooledState::Initialized(value.clone());
+                        value
+                    }
+                    StaticPooledState::Initialized(value) => value.clone(),
+                }
+            }
+        }
+    };
+}
+
+impl_static_pooled!(StaticPooledString, GlobalString);
+impl_static_pooled!(StaticPooledBuffer, GlobalBuffer);
+impl_static_pooled!(StaticPooledPath, GlobalPath);
+
+enum StaticPooledState<Owned, Borrowed, S>
+where
+    Owned: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
+    Borrowed: ?Sized + 'static,
+    &'static GlobalPool<Owned, S>: PoolKind<S>,
+    S: BuildHasher + 'static,
+{
+    Uninitialized(&'static GlobalPool<Owned, S>, &'static Borrowed),
+    Initialized(Pooled<&'static GlobalPool<Owned, S>, S>),
 }

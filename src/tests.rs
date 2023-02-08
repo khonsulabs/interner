@@ -5,8 +5,9 @@ use std::path::{Path, PathBuf};
 use std::thread;
 
 use crate::global::GlobalPool;
+use crate::pool::PoolKindSealed;
 use crate::shared::{SharedPool, SharedString, StringPool};
-use crate::{pool::PoolKindSealed, Pooled};
+use crate::Pooled;
 
 static GLOBAL_STRINGS: GlobalPool<String> = GlobalPool::new();
 static GLOBAL_PATHS: GlobalPool<PathBuf> = GlobalPool::new();
@@ -190,4 +191,29 @@ fn custom_global_pool() {
     let from_custom = CUSTOM_POOL.get("hello");
     let global = GLOBAL_STRINGS.get("hello");
     assert!(!Pooled::ptr_eq(&from_custom, &global));
+}
+
+#[test]
+fn pooled_debug() {
+    let shared_pool = StringPool::default();
+    let string = shared_pool.get("test");
+
+    let debugged = format!("{string:?}");
+    println!("{debugged}");
+    let expected = format!(
+        "Pooled {{ value: \"test\", index: {:?}, pool: {:?} }}",
+        string.0 .0.index,
+        string.0 .0.pool.address_of()
+    );
+    assert_eq!(debugged, expected);
+
+    let second = shared_pool.get("test");
+    let second_debugged = format!("{second:?}");
+    assert_eq!(second_debugged, debugged);
+
+    let other_pool = StringPool::default();
+
+    let third = other_pool.get("test");
+    let third_debugged = format!("{third:?}");
+    assert_ne!(third_debugged, debugged);
 }

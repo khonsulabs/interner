@@ -14,6 +14,7 @@ pub trait PoolKindSealed<Hasher> {
     type Stored: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
 
     fn with_active_symbols<T>(&self, logic: impl FnOnce(&mut Pool<Self, Hasher>) -> T) -> T;
+    fn address_of(&self) -> *const ();
 }
 
 #[derive(Debug)]

@@ -50,7 +50,6 @@ pub trait PoolKind<S>: Clone + PartialEq + PoolKindSealed<S> {}
 /// using incompatible [`Hash`] implementations to look up values in
 /// `HashMap`s/`HashSet`s where this type is
 /// used as the key.
-#[derive(Debug)]
 pub struct Pooled<P, S>(SharedData<P, S>)
 where
     P: PoolKind<S>,
@@ -129,6 +128,21 @@ where
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&**self, f)
+    }
+}
+
+impl<P, S> Debug for Pooled<P, S>
+where
+    P: PoolKind<S>,
+    P::Stored: Debug,
+    S: BuildHasher,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Pooled")
+            .field("value", &**self)
+            .field("index", &self.0 .0.index)
+            .field("pool", &self.0 .0.pool.address_of())
+            .finish()
     }
 }
 

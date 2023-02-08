@@ -151,6 +151,10 @@ where
 
         logic(&mut symbols)
     }
+
+    fn address_of(&self) -> *const () {
+        Arc::as_ptr(&self.0).cast()
+    }
 }
 
 impl<T, S> PartialEq for SharedPool<T, S>
