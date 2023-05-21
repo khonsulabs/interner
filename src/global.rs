@@ -5,7 +5,7 @@ use std::hash::{BuildHasher, Hash};
 use std::path::{Path, PathBuf};
 use std::sync::{Mutex, RwLock};
 
-use crate::pool::{Pool, PoolKindSealed};
+use crate::pool::{Pool, PoolKindSealed, Poolable};
 use crate::{PoolKind, Pooled};
 
 /// A pooled string that is stored in a [`GlobalPool`].
@@ -51,14 +51,14 @@ pub type BufferPool<S = RandomState> = GlobalPool<Vec<u8>, S>;
 #[derive(Debug)]
 pub struct GlobalPool<T, S = RandomState>(Mutex<GlobalPoolState<T, S>>)
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
     S: BuildHasher + 'static;
 
 #[derive(Debug)]
 enum GlobalPoolState<T, S>
 where
     &'static GlobalPool<T, S>: PoolKind<S>,
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
     S: BuildHasher + 'static,
 {
     Initializing,
@@ -69,7 +69,7 @@ where
 
 impl<T> GlobalPool<T>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
 {
     /// Returns a new instance using [`RandomState`] for the internal hashing.
     #[must_use]
@@ -79,7 +79,7 @@ where
 }
 impl<T, S> GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
     /// Returns a collection of the currently pooled items.
@@ -98,7 +98,7 @@ where
 }
 impl<T, S, S2> PartialEq<GlobalPool<T, S2>> for GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
     S2: BuildHasher,
 {
@@ -109,10 +109,11 @@ where
 
 impl<T, S> PoolKindSealed<S> for &'static GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
-    type Stored = T;
+    type Owned = T;
+    type Pooled = T::Boxed;
 
     fn with_active_symbols<R>(&self, logic: impl FnOnce(&mut Pool<Self, S>) -> R) -> R {
         let mut symbols = self.0.lock().expect("poisoned");
@@ -141,14 +142,14 @@ where
 
 impl<T, S> PoolKind<S> for &'static GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
 }
 
 impl<T, S> GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
     /// Returns a new instance using the provided hasher.

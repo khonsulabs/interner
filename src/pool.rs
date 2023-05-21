@@ -11,10 +11,48 @@ use std::sync::{atomic, Arc};
 use crate::{PoolKind, Pooled};
 
 pub trait PoolKindSealed<Hasher> {
-    type Stored: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
+    type Owned: Poolable<Boxed = Self::Pooled>
+        + Debug
+        + Clone
+        + Eq
+        + PartialEq
+        + Hash
+        + Ord
+        + PartialOrd;
+    type Pooled: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
 
     fn with_active_symbols<T>(&self, logic: impl FnOnce(&mut Pool<Self, Hasher>) -> T) -> T;
     fn address_of(&self) -> *const ();
+}
+
+pub trait Poolable {
+    type Boxed: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
+
+    fn boxed(self) -> Self::Boxed;
+}
+
+impl Poolable for String {
+    type Boxed = Box<str>;
+
+    fn boxed(self) -> Self::Boxed {
+        self.into_boxed_str()
+    }
+}
+
+impl Poolable for PathBuf {
+    type Boxed = Box<Path>;
+
+    fn boxed(self) -> Self::Boxed {
+        self.into_boxed_path()
+    }
+}
+
+impl Poolable for Vec<u8> {
+    type Boxed = Box<[u8]>;
+
+    fn boxed(self) -> Self::Boxed {
+        self.into_boxed_slice()
+    }
 }
 
 #[derive(Debug)]
@@ -62,7 +100,7 @@ where
 
 impl<P, S> Borrow<str> for SharedData<P, S>
 where
-    P: PoolKind<S, Stored = String>,
+    P: PoolKind<S, Pooled = Box<str>>,
     S: BuildHasher,
 {
     fn borrow(&self) -> &str {
@@ -72,7 +110,7 @@ where
 
 impl<P, S> Borrow<Path> for SharedData<P, S>
 where
-    P: PoolKind<S, Stored = PathBuf>,
+    P: PoolKind<S, Pooled = Box<Path>>,
     S: BuildHasher,
 {
     fn borrow(&self) -> &Path {
@@ -82,7 +120,7 @@ where
 
 impl<P, S> Borrow<[u8]> for SharedData<P, S>
 where
-    P: PoolKind<S, Stored = Vec<u8>>,
+    P: PoolKind<S, Pooled = Box<[u8]>>,
     S: BuildHasher,
 {
     fn borrow(&self) -> &[u8] {
@@ -136,7 +174,7 @@ where
     P: PoolKind<S>,
 {
     pub index: usize,
-    pub value: P::Stored,
+    pub value: P::Pooled,
     pub freeing: AtomicBool,
     pub pool: P,
     _hasher: PhantomData<S>,
@@ -168,8 +206,8 @@ where
 
     pub fn get<K>(&mut self, pooled: Cow<'_, K>, pool: &P) -> Pooled<P, S>
     where
-        K: ToOwned<Owned = P::Stored> + Hash + Eq + ?Sized,
-        P::Stored: Borrow<K> + PartialEq<K>,
+        K: ToOwned<Owned = P::Owned> + Hash + Eq + ?Sized,
+        P::Owned: Borrow<K> + PartialEq<K>,
         SharedData<P, S>: Borrow<K>,
     {
         if let Some(symbol) = self.active.get(pooled.as_ref()).cloned() {
@@ -187,7 +225,7 @@ where
 
             let symbol = Pooled(SharedData(Arc::new(Data {
                 index,
-                value,
+                value: value.boxed(),
                 freeing: AtomicBool::new(false),
                 pool: pool.clone(),
                 _hasher: PhantomData,

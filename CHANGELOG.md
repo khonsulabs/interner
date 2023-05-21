@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   directly compared against their non-static counterparts, rather than requiring
   a `.get()` to do the comparison.
 
+### Changed
+
+- Internally, the pools now stored boxed representations (e.g., `Box<str>`).
+  This reduces the pool's internal storage overhead by one usize per stored
+  element.
+
 ## v0.1.1
 
 ### Fixed

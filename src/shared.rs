@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 use crate::global::GlobalPool;
-use crate::pool::{Pool, PoolKindSealed};
+use crate::pool::{Pool, PoolKindSealed, Poolable};
 use crate::{PoolKind, Pooled};
 
 /// A pooled string that belongs to a [`StringPool`].
@@ -44,12 +44,12 @@ pub type BufferPool<S = RandomState> = SharedPool<Vec<u8>, S>;
 #[derive(Debug)]
 pub struct SharedPool<T, S = RandomState>(Arc<Mutex<Pool<Self, S>>>)
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher;
 
 impl<T, S> SharedPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
     /// Returns a collection of the currently pooled items.
@@ -144,7 +144,7 @@ where
 
 impl<T, S> Clone for SharedPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
     fn clone(&self) -> Self {
@@ -154,17 +154,18 @@ where
 
 impl<T, S> PoolKind<S> for SharedPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
 }
 
 impl<T, S> PoolKindSealed<S> for SharedPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
-    type Stored = T;
+    type Owned = T;
+    type Pooled = T::Boxed;
 
     fn with_active_symbols<R>(&self, logic: impl FnOnce(&mut Pool<Self, S>) -> R) -> R {
         let mut symbols = self.0.lock().expect("poisoned");
@@ -179,7 +180,7 @@ where
 
 impl<T, S> PartialEq for SharedPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
     fn eq(&self, other: &SharedPool<T, S>) -> bool {
@@ -189,7 +190,7 @@ where
 
 impl<T, S, S2> PartialEq<&'static GlobalPool<T, S2>> for SharedPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
     S2: BuildHasher,
 {
@@ -200,7 +201,7 @@ where
 
 impl<T, S, S2> PartialEq<SharedPool<T, S>> for &'static GlobalPool<T, S2>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
     S2: BuildHasher,
 {
@@ -211,7 +212,7 @@ where
 
 impl<T> Default for SharedPool<T, RandomState>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
 {
     fn default() -> Self {
         Self(Arc::default())

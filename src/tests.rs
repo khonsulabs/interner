@@ -6,7 +6,9 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::thread;
 
-use crate::global::{GlobalPool, StaticPooledBuffer, StaticPooledPath, StaticPooledString};
+use crate::global::{
+    GlobalPool, GlobalString, StaticPooledBuffer, StaticPooledPath, StaticPooledString,
+};
 use crate::pool::PoolKindSealed;
 use crate::shared::{SharedPool, SharedString, StringPool};
 use crate::Pooled;
@@ -139,7 +141,7 @@ fn multithreaded_reaquire() {
     for _ in 0..4 {
         threads.push(thread::spawn(|| {
             for _ in 0..1000 {
-                let _ = GLOBAL_STRINGS.get("multithreaded");
+                let _: GlobalString = GLOBAL_STRINGS.get("multithreaded");
             }
         }));
     }
