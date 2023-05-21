@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/pool.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>pool.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-6827029ac823cab7.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-ebce58d0a40c3431.css"><link rel="stylesheet" disabled href="../../static.files/dark-f23faae4a2daf9a6.css"><link rel="stylesheet" disabled href="../../static.files/ayu-8af5e100b21cd173.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-5cf2e01a42cc9858.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-c55e1eb52e1886b4.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../interner/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/pool.rs`."><title>pool.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../interner/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -211,6 +211,44 @@
 <a href="#211" id="211">211</a>
 <a href="#212" id="212">212</a>
 <a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::borrow::{Borrow, Cow};
 <span class="kw">use </span>std::collections::hash_map::RandomState;
 <span class="kw">use </span>std::collections::HashSet;
@@ -224,10 +262,48 @@
 <span class="kw">use crate</span>::{PoolKind, Pooled};
 
 <span class="kw">pub trait </span>PoolKindSealed&lt;Hasher&gt; {
-    <span class="kw">type </span>Stored: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
+    <span class="kw">type </span>Owned: Poolable&lt;Boxed = <span class="self">Self</span>::Pooled&gt;
+        + Debug
+        + Clone
+        + Eq
+        + PartialEq
+        + Hash
+        + Ord
+        + PartialOrd;
+    <span class="kw">type </span>Pooled: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
 
     <span class="kw">fn </span>with_active_symbols&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, logic: <span class="kw">impl </span>FnOnce(<span class="kw-2">&amp;mut </span>Pool&lt;<span class="self">Self</span>, Hasher&gt;) -&gt; T) -&gt; T;
     <span class="kw">fn </span>address_of(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*const </span>();
+}
+
+<span class="kw">pub trait </span>Poolable {
+    <span class="kw">type </span>Boxed: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
+
+    <span class="kw">fn </span>boxed(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Boxed;
+}
+
+<span class="kw">impl </span>Poolable <span class="kw">for </span>String {
+    <span class="kw">type </span>Boxed = Box&lt;str&gt;;
+
+    <span class="kw">fn </span>boxed(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Boxed {
+        <span class="self">self</span>.into_boxed_str()
+    }
+}
+
+<span class="kw">impl </span>Poolable <span class="kw">for </span>PathBuf {
+    <span class="kw">type </span>Boxed = Box&lt;Path&gt;;
+
+    <span class="kw">fn </span>boxed(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Boxed {
+        <span class="self">self</span>.into_boxed_path()
+    }
+}
+
+<span class="kw">impl </span>Poolable <span class="kw">for </span>Vec&lt;u8&gt; {
+    <span class="kw">type </span>Boxed = Box&lt;[u8]&gt;;
+
+    <span class="kw">fn </span>boxed(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Boxed {
+        <span class="self">self</span>.into_boxed_slice()
+    }
 }
 
 <span class="attr">#[derive(Debug)]
@@ -275,7 +351,7 @@
 
 <span class="kw">impl</span>&lt;P, S&gt; Borrow&lt;str&gt; <span class="kw">for </span>SharedData&lt;P, S&gt;
 <span class="kw">where
-    </span>P: PoolKind&lt;S, Stored = String&gt;,
+    </span>P: PoolKind&lt;S, Pooled = Box&lt;str&gt;&gt;,
     S: BuildHasher,
 {
     <span class="kw">fn </span>borrow(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
@@ -285,7 +361,7 @@
 
 <span class="kw">impl</span>&lt;P, S&gt; Borrow&lt;Path&gt; <span class="kw">for </span>SharedData&lt;P, S&gt;
 <span class="kw">where
-    </span>P: PoolKind&lt;S, Stored = PathBuf&gt;,
+    </span>P: PoolKind&lt;S, Pooled = Box&lt;Path&gt;&gt;,
     S: BuildHasher,
 {
     <span class="kw">fn </span>borrow(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Path {
@@ -295,7 +371,7 @@
 
 <span class="kw">impl</span>&lt;P, S&gt; Borrow&lt;[u8]&gt; <span class="kw">for </span>SharedData&lt;P, S&gt;
 <span class="kw">where
-    </span>P: PoolKind&lt;S, Stored = Vec&lt;u8&gt;&gt;,
+    </span>P: PoolKind&lt;S, Pooled = Box&lt;[u8]&gt;&gt;,
     S: BuildHasher,
 {
     <span class="kw">fn </span>borrow(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
@@ -349,7 +425,7 @@
     </span>P: PoolKind&lt;S&gt;,
 {
     <span class="kw">pub </span>index: usize,
-    <span class="kw">pub </span>value: P::Stored,
+    <span class="kw">pub </span>value: P::Pooled,
     <span class="kw">pub </span>freeing: AtomicBool,
     <span class="kw">pub </span>pool: P,
     _hasher: PhantomData&lt;S&gt;,
@@ -381,8 +457,8 @@
 
     <span class="kw">pub fn </span>get&lt;K&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, pooled: Cow&lt;<span class="lifetime">&#39;_</span>, K&gt;, pool: <span class="kw-2">&amp;</span>P) -&gt; Pooled&lt;P, S&gt;
     <span class="kw">where
-        </span>K: ToOwned&lt;Owned = P::Stored&gt; + Hash + Eq + <span class="question-mark">?</span>Sized,
-        P::Stored: Borrow&lt;K&gt; + PartialEq&lt;K&gt;,
+        </span>K: ToOwned&lt;Owned = P::Owned&gt; + Hash + Eq + <span class="question-mark">?</span>Sized,
+        P::Owned: Borrow&lt;K&gt; + PartialEq&lt;K&gt;,
         SharedData&lt;P, S&gt;: Borrow&lt;K&gt;,
     {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(symbol) = <span class="self">self</span>.active.get(pooled.as_ref()).cloned() {
@@ -400,7 +476,7 @@
 
             <span class="kw">let </span>symbol = Pooled(SharedData(Arc::new(Data {
                 index,
-                value,
+                value: value.boxed(),
                 freeing: AtomicBool::new(<span class="bool-val">false</span>),
                 pool: pool.clone(),
                 _hasher: PhantomData,
@@ -425,4 +501,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="interner" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0 (fc594f156 2023-01-24)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="interner" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
