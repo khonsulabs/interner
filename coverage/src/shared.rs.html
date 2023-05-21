@@ -22,8 +22,8 @@
         <div class="level-item has-text-centered">
         <div>
             <p class="heading">Functions</p>
-            <p class="title has-text-warning">
-                <abbr title="76 / 85">89.41 %</abbr></p>
+            <p class="title has-text-danger">
+                <abbr title="76 / 104">73.08 %</abbr></p>
         </div>
     </div>
 
@@ -151,7 +151,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">use crate::pool::{Pool, PoolKindSealed};</pre>
+                <pre class="has-background-white py-0 px-2">use crate::pool::{Pool, PoolKindSealed, Poolable};</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -645,7 +645,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -710,7 +710,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -1945,7 +1945,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2075,7 +2075,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2166,7 +2166,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2205,7 +2205,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    type Stored = T;</pre>
+                <pre class="has-background-white py-0 px-2">    type Owned = T;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2218,7 +2218,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">    type Pooled = T::Boxed;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2227,11 +2227,11 @@
                 <a href="#169">169</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                41
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn with_active_symbols&lt;R&gt;(&amp;self, logic: impl FnOnce(&amp;mut Pool&lt;Self, S&gt;) -&gt; R) -&gt; R {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2244,7 +2244,7 @@
                 41
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        let mut symbols = self.0.lock().expect(&quot;poisoned&quot;);</pre>
+                <pre class="has-background-success-light py-0 px-2">    fn with_active_symbols&lt;R&gt;(&amp;self, logic: impl FnOnce(&amp;mut Pool&lt;Self, S&gt;) -&gt; R) -&gt; R {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2257,7 +2257,7 @@
                 41
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2"></pre>
+                <pre class="has-background-success-light py-0 px-2">        let mut symbols = self.0.lock().expect(&quot;poisoned&quot;);</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2270,7 +2270,7 @@
                 41
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        logic(&amp;mut symbols)</pre>
+                <pre class="has-background-success-light py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2283,7 +2283,7 @@
                 41
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+                <pre class="has-background-success-light py-0 px-2">        logic(&amp;mut symbols)</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2292,11 +2292,11 @@
                 <a href="#174">174</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                41
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2305,11 +2305,11 @@
                 <a href="#175">175</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                4
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn address_of(&amp;self) -&gt; *const () {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2322,7 +2322,7 @@
                 4
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        Arc::as_ptr(&amp;self.0).cast()</pre>
+                <pre class="has-background-success-light py-0 px-2">    fn address_of(&amp;self) -&gt; *const () {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2335,7 +2335,7 @@
                 4
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+                <pre class="has-background-success-light py-0 px-2">        Arc::as_ptr(&amp;self.0).cast()</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2344,11 +2344,11 @@
                 <a href="#178">178</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                4
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2361,7 +2361,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2374,7 +2374,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PartialEq for SharedPool&lt;T, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2387,7 +2387,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S&gt; PartialEq for SharedPool&lt;T, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2400,7 +2400,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2413,7 +2413,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2426,7 +2426,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2435,11 +2435,11 @@
                 <a href="#185">185</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                9
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2452,7 +2452,7 @@
                 9
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        Arc::ptr_eq(&amp;self.0, &amp;other.0)</pre>
+                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2465,7 +2465,7 @@
                 9
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+                <pre class="has-background-success-light py-0 px-2">        Arc::ptr_eq(&amp;self.0, &amp;other.0)</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2474,11 +2474,11 @@
                 <a href="#188">188</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                9
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2491,7 +2491,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2504,7 +2504,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S, S2&gt; PartialEq&lt;&amp;&#x27;static GlobalPool&lt;T, S2&gt;&gt; for SharedPool&lt;T, S&gt;</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2517,7 +2517,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S, S2&gt; PartialEq&lt;&amp;&#x27;static GlobalPool&lt;T, S2&gt;&gt; for SharedPool&lt;T, S&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2530,7 +2530,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2543,7 +2543,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2556,7 +2556,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S2: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2569,7 +2569,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">    S2: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2578,11 +2578,11 @@
                 <a href="#196">196</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                7
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;&amp;&#x27;static GlobalPool&lt;T, S2&gt;) -&gt; bool {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2595,7 +2595,7 @@
                 7
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        false</pre>
+                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;&amp;&#x27;static GlobalPool&lt;T, S2&gt;) -&gt; bool {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2608,7 +2608,7 @@
                 7
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+                <pre class="has-background-success-light py-0 px-2">        false</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2617,11 +2617,11 @@
                 <a href="#199">199</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                7
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2634,7 +2634,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2647,7 +2647,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T, S, S2&gt; PartialEq&lt;SharedPool&lt;T, S&gt;&gt; for &amp;&#x27;static GlobalPool&lt;T, S2&gt;</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2660,7 +2660,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">impl&lt;T, S, S2&gt; PartialEq&lt;SharedPool&lt;T, S&gt;&gt; for &amp;&#x27;static GlobalPool&lt;T, S2&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2673,7 +2673,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2686,7 +2686,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2699,7 +2699,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    S2: BuildHasher,</pre>
+                <pre class="has-background-white py-0 px-2">    S: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2712,7 +2712,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">    S2: BuildHasher,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2721,11 +2721,11 @@
                 <a href="#207">207</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                6
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2738,7 +2738,7 @@
                 6
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        false</pre>
+                <pre class="has-background-success-light py-0 px-2">    fn eq(&amp;self, _other: &amp;SharedPool&lt;T, S&gt;) -&gt; bool {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2751,7 +2751,7 @@
                 6
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+                <pre class="has-background-success-light py-0 px-2">        false</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2760,11 +2760,11 @@
                 <a href="#210">210</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
-                
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                6
             </div>
-            <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">}</pre>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2777,7 +2777,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2"></pre>
+                <pre class="has-background-white py-0 px-2">}</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2790,7 +2790,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">impl&lt;T&gt; Default for SharedPool&lt;T, RandomState&gt;</pre>
+                <pre class="has-background-white py-0 px-2"></pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2803,7 +2803,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">where</pre>
+                <pre class="has-background-white py-0 px-2">impl&lt;T&gt; Default for SharedPool&lt;T, RandomState&gt;</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2816,7 +2816,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
+                <pre class="has-background-white py-0 px-2">where</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2829,7 +2829,7 @@
                 
             </div>
             <div class="column has-background-white p-0">
-                <pre class="has-background-white py-0 px-2">{</pre>
+                <pre class="has-background-white py-0 px-2">    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2838,11 +2838,11 @@
                 <a href="#216">216</a>
             </div>
             <div
-                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
-                11
+                class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
+                
             </div>
-            <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    fn default() -&gt; Self {</pre>
+            <div class="column has-background-white p-0">
+                <pre class="has-background-white py-0 px-2">{</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2855,7 +2855,7 @@
                 11
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">        Self(Arc::default())</pre>
+                <pre class="has-background-success-light py-0 px-2">    fn default() -&gt; Self {</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
@@ -2868,13 +2868,26 @@
                 11
             </div>
             <div class="column has-background-success-light p-0">
-                <pre class="has-background-success-light py-0 px-2">    }</pre>
+                <pre class="has-background-success-light py-0 px-2">        Self(Arc::default())</pre>
             </div>
         </div><div class="columns p-0 m-0">
             <div
                 class="column is-1 is-narrow p-0 has-text-centered"
                 id="219">
                 <a href="#219">219</a>
+            </div>
+            <div
+                class="column is-1 is-narrow p-0 has-text-centered has-text-success-light has-background-success">
+                11
+            </div>
+            <div class="column has-background-success-light p-0">
+                <pre class="has-background-success-light py-0 px-2">    }</pre>
+            </div>
+        </div><div class="columns p-0 m-0">
+            <div
+                class="column is-1 is-narrow p-0 has-text-centered"
+                id="220">
+                <a href="#220">220</a>
             </div>
             <div
                 class="column is-1 is-narrow p-0 has-text-centered has-text-white has-background-white">
@@ -2886,7 +2899,7 @@
         </div></div>
         <footer class="footer">
             <div class="content has-text-centered">
-                <p class="heading">Date: 2023-02-08 21:54</p>
+                <p class="heading">Date: 2023-05-21 14:53</p>
             </div>
         </footer>
     </body>
