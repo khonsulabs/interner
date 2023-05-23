@@ -11,17 +11,16 @@ static STATIC_PATH: StaticPooledPath = PATH_POOL.get_static_with(|| Cow::Borrowe
 fn main() {
     // Get a path from the static instance. This will keep the pooled path
     // alive for the duration of the process.
-    let a = STATIC_PATH.get();
+    STATIC_PATH.get();
     // Request the same path directly from the pool.
     let a_again = PATH_POOL.get(Path::new("a"));
 
     // The two instances are pointing to the same instance.
-    assert!(GlobalPath::ptr_eq(&a, &a_again));
+    assert!(GlobalPath::ptr_eq(&*STATIC_PATH, &a_again));
 
     // Verify the pool still contains "a" even after dropping our local
     // instances. This is due to STATIC_PATH still holding a reference.
     drop(a_again);
-    drop(a);
     let pooled: Vec<GlobalPath> = PATH_POOL.pooled();
     assert_eq!(pooled.len(), 1);
     assert_eq!(pooled[0], Path::new("a"));

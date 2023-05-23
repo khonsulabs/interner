@@ -217,3 +217,83 @@ where
         self == *other
     }
 }
+
+impl<P, S> Ord for Pooled<P, S>
+where
+    P: PoolKind<S>,
+    S: BuildHasher,
+{
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        (**self).cmp(&**other)
+    }
+}
+
+impl<P, S> PartialOrd for Pooled<P, S>
+where
+    P: PoolKind<S>,
+    S: BuildHasher,
+{
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl<P, S> PartialOrd<str> for Pooled<P, S>
+where
+    P: PoolKind<S, Pooled = Box<str>>,
+    S: BuildHasher,
+{
+    fn partial_cmp(&self, other: &str) -> Option<std::cmp::Ordering> {
+        (**self).as_ref().partial_cmp(other)
+    }
+}
+
+impl<'a, P, S> PartialOrd<&'a str> for Pooled<P, S>
+where
+    P: PoolKind<S, Pooled = Box<str>>,
+    S: BuildHasher,
+{
+    fn partial_cmp(&self, other: &&'a str) -> Option<std::cmp::Ordering> {
+        self.partial_cmp(*other)
+    }
+}
+
+impl<P, S> PartialOrd<Path> for Pooled<P, S>
+where
+    P: PoolKind<S, Pooled = Box<Path>>,
+    S: BuildHasher,
+{
+    fn partial_cmp(&self, other: &Path) -> Option<std::cmp::Ordering> {
+        (**self).as_ref().partial_cmp(other)
+    }
+}
+
+impl<'a, P, S> PartialOrd<&'a Path> for Pooled<P, S>
+where
+    P: PoolKind<S, Pooled = Box<Path>>,
+    S: BuildHasher,
+{
+    fn partial_cmp(&self, other: &&'a Path) -> Option<std::cmp::Ordering> {
+        self.partial_cmp(*other)
+    }
+}
+
+impl<P, S> PartialOrd<[u8]> for Pooled<P, S>
+where
+    P: PoolKind<S, Pooled = Box<[u8]>>,
+    S: BuildHasher,
+{
+    fn partial_cmp(&self, other: &[u8]) -> Option<std::cmp::Ordering> {
+        (**self).as_ref().partial_cmp(other)
+    }
+}
+
+impl<'a, P, S> PartialOrd<&'a [u8]> for Pooled<P, S>
+where
+    P: PoolKind<S, Pooled = Box<[u8]>>,
+    S: BuildHasher,
+{
+    fn partial_cmp(&self, other: &&'a [u8]) -> Option<std::cmp::Ordering> {
+        self.partial_cmp(*other)
+    }
+}

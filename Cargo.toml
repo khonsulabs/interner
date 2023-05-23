@@ -11,3 +11,6 @@ categories = ["encoding"]
 
 [workspace]
 members = ["xtask"]
+
+[dependencies]
+once_cell = "1.17.1" # TODO remove once Rust 1.70 is released

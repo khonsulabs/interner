@@ -239,15 +239,14 @@ fn statics() {
         ($static:ident, $against:expr) => {{
             let first = $static.get();
             let first_ptr = Arc::as_ptr(&first.0 .0);
-            drop(first);
 
             let second = $static.get();
             let second_ptr = Arc::as_ptr(&second.0 .0);
             assert_eq!(first_ptr, second_ptr);
             assert_eq!(second, $against);
 
-            assert_eq!($static, second);
-            assert_eq!(second, $static);
+            assert_eq!($static, *second);
+            assert_eq!(second, &*$static);
         }};
     }
 

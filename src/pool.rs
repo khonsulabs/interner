@@ -11,22 +11,15 @@ use std::sync::{atomic, Arc};
 use crate::{PoolKind, Pooled};
 
 pub trait PoolKindSealed<Hasher> {
-    type Owned: Poolable<Boxed = Self::Pooled>
-        + Debug
-        + Clone
-        + Eq
-        + PartialEq
-        + Hash
-        + Ord
-        + PartialOrd;
-    type Pooled: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
+    type Owned: Poolable<Boxed = Self::Pooled> + Debug + Clone + Eq + Hash + Ord;
+    type Pooled: Debug + Clone + Eq + Hash + Ord;
 
     fn with_active_symbols<T>(&self, logic: impl FnOnce(&mut Pool<Self, Hasher>) -> T) -> T;
     fn address_of(&self) -> *const ();
 }
 
 pub trait Poolable {
-    type Boxed: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd;
+    type Boxed: Debug + Clone + Eq + Hash + Ord;
 
     fn boxed(self) -> Self::Boxed;
 }

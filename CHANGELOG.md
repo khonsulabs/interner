@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   This reduces the pool's internal storage overhead by one usize per stored
   element.
 
+- Internally, `StaticPooledString`, `StaticPooledBuffer`, and `StaticPooledPath`
+  now use `OnceCell`. This allows these types to implement `Deref` into their
+  global counterparts.
+  TODO This should say std::sync::OnceLock once 1.70 is released (hopefully!)
+
 ## v0.1.1
 
 ### Fixed
