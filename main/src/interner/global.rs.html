@@ -422,12 +422,22 @@
 <a href="#422" id="422">422</a>
 <a href="#423" id="423">423</a>
 <a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::borrow::Cow;
 <span class="kw">use </span>std::collections::hash_map::RandomState;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::hash::{BuildHasher, Hash};
 <span class="kw">use </span>std::path::{Path, PathBuf};
-<span class="kw">use </span>std::sync::{Mutex, RwLock};
+<span class="kw">use </span>std::sync::Mutex;
+
+<span class="kw">use </span>once_cell::sync::OnceCell;
 
 <span class="kw">use </span><span class="kw">crate</span>::pool::{Pool, PoolKindSealed, Poolable};
 <span class="kw">use crate</span>::{PoolKind, Pooled};
@@ -629,7 +639,7 @@
     ///
     /// The string is not initialized until it is retrieved for the first time.
     </span><span class="kw">pub const fn </span>get_static(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; StaticPooledString&lt;S&gt; {
-        StaticPooledString(RwLock::new(StaticStringState::Uninitialized(<span class="self">self</span>, value)))
+        StaticPooledString::new(<span class="self">self</span>, value)
     }
 
     <span class="doccomment">/// Returns a static pooled string, which keeps the pooled string allocated
@@ -639,9 +649,7 @@
         <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="self">self</span>,
         function: <span class="kw">fn</span>() -&gt; Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;,
     ) -&gt; StaticPooledString&lt;S&gt; {
-        StaticPooledString(RwLock::new(StaticStringState::UninitializedFn(
-            <span class="self">self</span>, function,
-        )))
+        StaticPooledString::new_fn(<span class="self">self</span>, function)
     }
 }
 
@@ -664,13 +672,12 @@
 
     <span class="comment">// This function serves no purpose, currently, as there&#39;s no way to get a
     // static path in a const context -- Path::new() isn&#39;t const.
-
     // /// Returns a static pooled path, which keeps the pooled path allocated for
     // /// the duration of the process.
     // ///
     // /// The path is not initialized until it is retrieved for the first time.
     // pub const fn get_static(&amp;&#39;static self, value: &amp;&#39;static Path) -&gt; StaticPooledPath&lt;S&gt; {
-    //     StaticPooledPath(RwLock::new(StaticPathState::Uninitialized(self, value)))
+    //     StaticPooledPath::new(self, value)
     // }
 
     </span><span class="doccomment">/// Returns a static pooled path, which keeps the pooled path allocated for
@@ -680,9 +687,7 @@
         <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="self">self</span>,
         function: <span class="kw">fn</span>() -&gt; Cow&lt;<span class="lifetime">&#39;static</span>, Path&gt;,
     ) -&gt; StaticPooledPath&lt;S&gt; {
-        StaticPooledPath(RwLock::new(StaticPathState::UninitializedFn(
-            <span class="self">self</span>, function,
-        )))
+        StaticPooledPath::new_fn(<span class="self">self</span>, function)
     }
 }
 
@@ -709,7 +714,7 @@
     ///
     /// The buffer is not initialized until it is retrieved for the first time.
     </span><span class="kw">pub const fn </span>get_static(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u8]) -&gt; StaticPooledBuffer&lt;S&gt; {
-        StaticPooledBuffer(RwLock::new(StaticBufferState::Uninitialized(<span class="self">self</span>, value)))
+        StaticPooledBuffer::new(<span class="self">self</span>, value)
     }
 
     <span class="doccomment">/// Returns a static pooled buffer, which keeps the pooled buffer allocated
@@ -719,32 +724,42 @@
         <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="self">self</span>,
         function: <span class="kw">fn</span>() -&gt; Cow&lt;<span class="lifetime">&#39;static</span>, [u8]&gt;,
     ) -&gt; StaticPooledBuffer&lt;S&gt; {
-        StaticPooledBuffer(RwLock::new(StaticBufferState::UninitializedFn(
-            <span class="self">self</span>, function,
-        )))
+        StaticPooledBuffer::new_fn(<span class="self">self</span>, function)
     }
 }
 
 <span class="doccomment">/// A lazily-initialized [`GlobalString`] that stays allocated for the duration
 /// of the process.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>StaticPooledString&lt;S = RandomState&gt;(RwLock&lt;StaticStringState&lt;S&gt;&gt;)
+</span><span class="kw">pub struct </span>StaticPooledString&lt;S = RandomState&gt;
 <span class="kw">where
-    </span>S: BuildHasher + <span class="lifetime">&#39;static</span>;
+    </span>S: BuildHasher + <span class="lifetime">&#39;static</span>,
+{
+    init: StaticStringInit&lt;S&gt;,
+    cell: OnceCell&lt;GlobalString&lt;S&gt;&gt;,
+}
 
 <span class="doccomment">/// A lazily-initialized [`GlobalBuffer`] that stays allocated for the duration
 /// of the process.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>StaticPooledBuffer&lt;S = RandomState&gt;(RwLock&lt;StaticBufferState&lt;S&gt;&gt;)
+</span><span class="kw">pub struct </span>StaticPooledBuffer&lt;S = RandomState&gt;
 <span class="kw">where
-    </span>S: BuildHasher + <span class="lifetime">&#39;static</span>;
+    </span>S: BuildHasher + <span class="lifetime">&#39;static</span>,
+{
+    init: StaticBufferInit&lt;S&gt;,
+    cell: OnceCell&lt;GlobalBuffer&lt;S&gt;&gt;,
+}
 
 <span class="doccomment">/// A lazily-initialized [`GlobalPath`] that stays allocated for the duration
 /// of the process.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>StaticPooledPath&lt;S = RandomState&gt;(RwLock&lt;StaticPathState&lt;S&gt;&gt;)
+</span><span class="kw">pub struct </span>StaticPooledPath&lt;S = RandomState&gt;
 <span class="kw">where
-    </span>S: BuildHasher + <span class="lifetime">&#39;static</span>;
+    </span>S: BuildHasher + <span class="lifetime">&#39;static</span>,
+{
+    init: StaticPathInit&lt;S&gt;,
+    cell: OnceCell&lt;GlobalPath&lt;S&gt;&gt;,
+}
 
 <span class="macro">macro_rules! </span>impl_static_pooled {
     (<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$pooled</span>:ident, <span class="macro-nonterminal">$statename</span>:ident, <span class="macro-nonterminal">$owned</span>:ty, <span class="macro-nonterminal">$borrowed</span>:ty) =&gt; {
@@ -752,33 +767,21 @@
         <span class="kw">where
             </span>S: BuildHasher + <span class="lifetime">&#39;static</span>,
         {
-            <span class="kw">fn </span>map&lt;F: <span class="kw">for</span>&lt;<span class="lifetime">&#39;a</span>&gt; FnOnce(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">$pooled</span>&lt;S&gt;) -&gt; R, R&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, map: F) -&gt; R {
-                <span class="comment">// First, assume this is initialized, since once we&#39;ve initialized, this
-                // is the positive flow for the remainder of the program.
-                </span><span class="kw">let </span>state = <span class="self">self</span>.<span class="number">0</span>.read().expect(<span class="string">&quot;poisoned&quot;</span>);
-                <span class="kw">if let </span><span class="macro-nonterminal">$statename::Initialized</span>(value) = <span class="kw-2">&amp;*</span>state {
-                    <span class="kw">return </span>map(value);
+            <span class="attr">#[allow(dead_code)] </span><span class="comment">// This function isn&#39;t called for StaticPooledPath, because there&#39;s no way to get a static Path.
+            </span><span class="kw">const fn </span>new(pool: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;<span class="macro-nonterminal">$owned</span>, S&gt;, value: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="macro-nonterminal">$borrowed</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">Self </span>{
+                    init: <span class="macro-nonterminal">$statename::Static</span>(pool, value),
+                    cell: OnceCell::new(),
                 }
-                drop(state);
+            }
 
-                <span class="comment">// We weren&#39;t initialized, but we may be racing with another thread to
-                // acquire the write() permission to the RwLock. We should re-check for
-                // initialization to save more effort.
-                </span><span class="kw">let </span><span class="kw-2">mut </span>state = <span class="self">self</span>.<span class="number">0</span>.write().expect(<span class="string">&quot;poisoned&quot;</span>);
-                <span class="kw">match </span><span class="kw-2">&amp;*</span>state {
-                    <span class="macro-nonterminal">$statename::Uninitialized</span>(pool, value) =&gt; {
-                        <span class="kw">let </span>value = pool.get(<span class="kw-2">*</span>value);
-                        <span class="kw">let </span>result = map(<span class="kw-2">&amp;</span>value);
-                        <span class="kw-2">*</span>state = <span class="macro-nonterminal">$statename::Initialized</span>(value);
-                        result
-                    }
-                    <span class="macro-nonterminal">$statename::UninitializedFn</span>(pool, function) =&gt; {
-                        <span class="kw">let </span>value = pool.get(function());
-                        <span class="kw">let </span>result = map(<span class="kw-2">&amp;</span>value);
-                        <span class="kw-2">*</span>state = <span class="macro-nonterminal">$statename::Initialized</span>(value);
-                        result
-                    }
-                    <span class="macro-nonterminal">$statename::Initialized</span>(value) =&gt; map(value),
+            <span class="kw">const fn </span>new_fn(
+                pool: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;<span class="macro-nonterminal">$owned</span>, S&gt;,
+                init: <span class="kw">fn</span>() -&gt; Cow&lt;<span class="lifetime">&#39;static</span>, <span class="macro-nonterminal">$borrowed</span>&gt;,
+            ) -&gt; <span class="self">Self </span>{
+                <span class="self">Self </span>{
+                    init: <span class="macro-nonterminal">$statename::Fn</span>(pool, init),
+                    cell: OnceCell::new(),
                 }
             }
 
@@ -790,23 +793,36 @@
             /// briefly.
             ///
             /// All subsequent accesses will be non-blocking.
-            </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$pooled</span>&lt;S&gt; {
-                <span class="self">self</span>.map(<span class="macro-nonterminal">$pooled::clone</span>)
+            </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="macro-nonterminal">$pooled</span>&lt;S&gt; {
+                <span class="self">self</span>.cell.get_or_init(|| <span class="kw">match </span><span class="self">self</span>.init {
+                    <span class="macro-nonterminal">$statename::Static</span>(pool, value) =&gt; pool.get(value).clone(),
+                    <span class="macro-nonterminal">$statename::Fn</span>(pool, init) =&gt; pool.get(init()).clone(),
+                })
             }
         }
 
-        <span class="attr">#[derive(Debug)]
-        #[allow(dead_code)] </span><span class="comment">// Path can&#39;t use the Uninitialized variant.
+        <span class="attr">#[derive(Debug, Clone, Copy)]
+        #[allow(dead_code)] </span><span class="comment">// Path can&#39;t use the Static variant.
         </span><span class="kw">enum </span><span class="macro-nonterminal">$statename</span>&lt;S&gt;
         <span class="kw">where
             </span>S: BuildHasher + <span class="lifetime">&#39;static</span>,
         {
-            Initialized(Pooled&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;<span class="macro-nonterminal">$owned</span>, S&gt;, S&gt;),
-            Uninitialized(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;<span class="macro-nonterminal">$owned</span>, S&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="macro-nonterminal">$borrowed</span>),
-            UninitializedFn(
+            Static(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;<span class="macro-nonterminal">$owned</span>, S&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="macro-nonterminal">$borrowed</span>),
+            Fn(
                 <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;<span class="macro-nonterminal">$owned</span>, S&gt;,
                 <span class="kw">fn</span>() -&gt; Cow&lt;<span class="lifetime">&#39;static</span>, <span class="macro-nonterminal">$borrowed</span>&gt;,
             ),
+        }
+
+        <span class="kw">impl</span>&lt;S&gt; std::ops::Deref <span class="kw">for </span><span class="macro-nonterminal">$name</span>&lt;S&gt;
+        <span class="kw">where
+            </span>S: BuildHasher,
+        {
+            <span class="kw">type </span>Target = <span class="macro-nonterminal">$pooled</span>&lt;S&gt;;
+
+            <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
+                <span class="self">self</span>.get()
+            }
         }
 
         <span class="kw">impl</span>&lt;S, S2&gt; PartialEq&lt;Pooled&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;<span class="macro-nonterminal">$owned</span>, S2&gt;, S2&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$name</span>&lt;S&gt;
@@ -815,7 +831,7 @@
             S2: BuildHasher,
         {
             <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Pooled&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>GlobalPool&lt;<span class="macro-nonterminal">$owned</span>, S2&gt;, S2&gt;) -&gt; bool {
-                <span class="self">self</span>.map(|stored| stored == other)
+                <span class="self">self</span>.get() == other
             }
         }
 
@@ -825,7 +841,7 @@
             S2: BuildHasher,
         {
             <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$name</span>&lt;S&gt;) -&gt; bool {
-                other.map(|stored| <span class="self">self </span>== stored)
+                <span class="self">self </span>== other.get()
             }
         }
     };
@@ -834,17 +850,17 @@
 <span class="macro">impl_static_pooled!</span>(
     StaticPooledString,
     GlobalString,
-    StaticStringState,
+    StaticStringInit,
     String,
     str
 );
 <span class="macro">impl_static_pooled!</span>(
     StaticPooledBuffer,
     GlobalBuffer,
-    StaticBufferState,
+    StaticBufferInit,
     Vec&lt;u8&gt;,
     [u8]
 );
-<span class="macro">impl_static_pooled!</span>(StaticPooledPath, GlobalPath, StaticPathState, PathBuf, Path);
+<span class="macro">impl_static_pooled!</span>(StaticPooledPath, GlobalPath, StaticPathInit, PathBuf, Path);
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="interner" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
