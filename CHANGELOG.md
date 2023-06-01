@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Breaking Changes
+
+- The MSRV is now 1.70.0
+
 ### Added
 
 - `StaticPooledString`/`StaticPooledBuffer`/`StaticPooledPath` can now be
@@ -20,9 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   element.
 
 - Internally, `StaticPooledString`, `StaticPooledBuffer`, and `StaticPooledPath`
-  now use `OnceCell`. This allows these types to implement `Deref` into their
-  global counterparts.
-  TODO This should say std::sync::OnceLock once 1.70 is released (hopefully!)
+  now use `std::sync::OnceLock`. This allows these types to implement `Deref`
+  into their global counterparts.
 
 ## v0.1.1
 

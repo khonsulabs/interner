@@ -8,9 +8,9 @@ readme = "./README.md"
 repository = "https://github.com/khonsulabs/pot"
 keywords = ["string-interner", "interner", "symbols"]
 categories = ["encoding"]
+rust-version = "1.70.0"
 
 [workspace]
 members = ["xtask"]
 
 [dependencies]
-once_cell = "1.17.1" # TODO remove once Rust 1.70 is released

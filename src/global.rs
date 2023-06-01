@@ -3,9 +3,7 @@ use std::collections::hash_map::RandomState;
 use std::fmt::Debug;
 use std::hash::{BuildHasher, Hash};
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
-
-use once_cell::sync::OnceCell;
+use std::sync::{Mutex, OnceLock};
 
 use crate::pool::{Pool, PoolKindSealed, Poolable};
 use crate::{PoolKind, Pooled};
@@ -304,7 +302,7 @@ where
     S: BuildHasher + 'static,
 {
     init: StaticStringInit<S>,
-    cell: OnceCell<GlobalString<S>>,
+    cell: OnceLock<GlobalString<S>>,
 }
 
 /// A lazily-initialized [`GlobalBuffer`] that stays allocated for the duration
@@ -315,7 +313,7 @@ where
     S: BuildHasher + 'static,
 {
     init: StaticBufferInit<S>,
-    cell: OnceCell<GlobalBuffer<S>>,
+    cell: OnceLock<GlobalBuffer<S>>,
 }
 
 /// A lazily-initialized [`GlobalPath`] that stays allocated for the duration
@@ -326,7 +324,7 @@ where
     S: BuildHasher + 'static,
 {
     init: StaticPathInit<S>,
-    cell: OnceCell<GlobalPath<S>>,
+    cell: OnceLock<GlobalPath<S>>,
 }
 
 macro_rules! impl_static_pooled {
@@ -339,7 +337,7 @@ macro_rules! impl_static_pooled {
             const fn new(pool: &'static GlobalPool<$owned, S>, value: &'static $borrowed) -> Self {
                 Self {
                     init: $statename::Static(pool, value),
-                    cell: OnceCell::new(),
+                    cell: OnceLock::new(),
                 }
             }
 
@@ -349,7 +347,7 @@ macro_rules! impl_static_pooled {
             ) -> Self {
                 Self {
                     init: $statename::Fn(pool, init),
-                    cell: OnceCell::new(),
+                    cell: OnceLock::new(),
                 }
             }
 
