@@ -27,7 +27,7 @@ Configuration(
             ),
             "src-base": (
                 default: "https://github.com/khonsulabs/interner/blob/interner",
-                release: "https://github.com/khonsulabs/interner/blob/v0.1.0",
+                release: "https://github.com/khonsulabs/interner/blob/v0.2.0",
             ),
         }
     ],

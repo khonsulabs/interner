@@ -3,9 +3,9 @@ use std::collections::hash_map::RandomState;
 use std::fmt::Debug;
 use std::hash::{BuildHasher, Hash};
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
+use std::sync::{Mutex, OnceLock};
 
-use crate::pool::{Pool, PoolKindSealed};
+use crate::pool::{Pool, PoolKindSealed, Poolable};
 use crate::{PoolKind, Pooled};
 
 /// A pooled string that is stored in a [`GlobalPool`].
@@ -51,14 +51,14 @@ pub type BufferPool<S = RandomState> = GlobalPool<Vec<u8>, S>;
 #[derive(Debug)]
 pub struct GlobalPool<T, S = RandomState>(Mutex<GlobalPoolState<T, S>>)
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
     S: BuildHasher + 'static;
 
 #[derive(Debug)]
 enum GlobalPoolState<T, S>
 where
     &'static GlobalPool<T, S>: PoolKind<S>,
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd + 'static,
     S: BuildHasher + 'static,
 {
     Initializing,
@@ -69,7 +69,7 @@ where
 
 impl<T> GlobalPool<T>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
 {
     /// Returns a new instance using [`RandomState`] for the internal hashing.
     #[must_use]
@@ -77,9 +77,28 @@ where
         Self::with_capacity_and_hasher_init(0, RandomState::new)
     }
 }
+impl<T, S> GlobalPool<T, S>
+where
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    S: BuildHasher,
+{
+    /// Returns a collection of the currently pooled items.
+    #[must_use]
+    pub fn pooled<C>(&'static self) -> C
+    where
+        C: FromIterator<Pooled<&'static Self, S>>,
+    {
+        self.with_active_symbols(|pool| {
+            pool.active
+                .iter()
+                .map(|data| Pooled(data.clone()))
+                .collect()
+        })
+    }
+}
 impl<T, S, S2> PartialEq<GlobalPool<T, S2>> for GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
     S2: BuildHasher,
 {
@@ -90,10 +109,11 @@ where
 
 impl<T, S> PoolKindSealed<S> for &'static GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
-    type Stored = T;
+    type Owned = T;
+    type Pooled = T::Boxed;
 
     fn with_active_symbols<R>(&self, logic: impl FnOnce(&mut Pool<Self, S>) -> R) -> R {
         let mut symbols = self.0.lock().expect("poisoned");
@@ -114,18 +134,22 @@ where
         let GlobalPoolState::Initialized(pool) = &mut *symbols else { unreachable!("always initialized above") };
         logic(pool)
     }
+
+    fn address_of(&self) -> *const () {
+        std::ptr::addr_of!(*self).cast()
+    }
 }
 
 impl<T, S> PoolKind<S> for &'static GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
 }
 
 impl<T, S> GlobalPool<T, S>
 where
-    T: Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
+    T: Poolable + Debug + Clone + Eq + PartialEq + Hash + Ord + PartialOrd,
     S: BuildHasher,
 {
     /// Returns a new instance using the provided hasher.
@@ -175,6 +199,24 @@ where
         let value = value.into();
         self.with_active_symbols(|symbols| symbols.get(value, &self))
     }
+
+    /// Returns a static pooled string, which keeps the pooled string allocated
+    /// for the duration of the process.
+    ///
+    /// The string is not initialized until it is retrieved for the first time.
+    pub const fn get_static(&'static self, value: &'static str) -> StaticPooledString<S> {
+        StaticPooledString::new(self, value)
+    }
+
+    /// Returns a static pooled string, which keeps the pooled string allocated
+    /// for the duration of the process. The string is initialized using the
+    /// function provided when it is retrieved for the first time.
+    pub const fn get_static_with(
+        &'static self,
+        function: fn() -> Cow<'static, str>,
+    ) -> StaticPooledString<S> {
+        StaticPooledString::new_fn(self, function)
+    }
 }
 
 impl<S> GlobalPool<PathBuf, S>
@@ -192,6 +234,26 @@ where
     {
         let value = value.into();
         self.with_active_symbols(|symbols| symbols.get(value, &self))
+    }
+
+    // This function serves no purpose, currently, as there's no way to get a
+    // static path in a const context -- Path::new() isn't const.
+    // /// Returns a static pooled path, which keeps the pooled path allocated for
+    // /// the duration of the process.
+    // ///
+    // /// The path is not initialized until it is retrieved for the first time.
+    // pub const fn get_static(&'static self, value: &'static Path) -> StaticPooledPath<S> {
+    //     StaticPooledPath::new(self, value)
+    // }
+
+    /// Returns a static pooled path, which keeps the pooled path allocated for
+    /// the duration of the process. The path is initialized using the function
+    /// provided when it is retrieved for the first time.
+    pub const fn get_static_with(
+        &'static self,
+        function: fn() -> Cow<'static, Path>,
+    ) -> StaticPooledPath<S> {
+        StaticPooledPath::new_fn(self, function)
     }
 }
 
@@ -212,4 +274,157 @@ where
         let value = value.into();
         self.with_active_symbols(|symbols| symbols.get(value, &self))
     }
+
+    /// Returns a static pooled buffer, which keeps the pooled buffer allocated for
+    /// the duration of the process.
+    ///
+    /// The buffer is not initialized until it is retrieved for the first time.
+    pub const fn get_static(&'static self, value: &'static [u8]) -> StaticPooledBuffer<S> {
+        StaticPooledBuffer::new(self, value)
+    }
+
+    /// Returns a static pooled buffer, which keeps the pooled buffer allocated
+    /// for the duration of the process. The buffer is initialized using the
+    /// function provided when it is retrieved for the first time.
+    pub const fn get_static_with(
+        &'static self,
+        function: fn() -> Cow<'static, [u8]>,
+    ) -> StaticPooledBuffer<S> {
+        StaticPooledBuffer::new_fn(self, function)
+    }
 }
+
+/// A lazily-initialized [`GlobalString`] that stays allocated for the duration
+/// of the process.
+#[derive(Debug)]
+pub struct StaticPooledString<S = RandomState>
+where
+    S: BuildHasher + 'static,
+{
+    init: StaticStringInit<S>,
+    cell: OnceLock<GlobalString<S>>,
+}
+
+/// A lazily-initialized [`GlobalBuffer`] that stays allocated for the duration
+/// of the process.
+#[derive(Debug)]
+pub struct StaticPooledBuffer<S = RandomState>
+where
+    S: BuildHasher + 'static,
+{
+    init: StaticBufferInit<S>,
+    cell: OnceLock<GlobalBuffer<S>>,
+}
+
+/// A lazily-initialized [`GlobalPath`] that stays allocated for the duration
+/// of the process.
+#[derive(Debug)]
+pub struct StaticPooledPath<S = RandomState>
+where
+    S: BuildHasher + 'static,
+{
+    init: StaticPathInit<S>,
+    cell: OnceLock<GlobalPath<S>>,
+}
+
+macro_rules! impl_static_pooled {
+    ($name:ident, $pooled:ident, $statename:ident, $owned:ty, $borrowed:ty) => {
+        impl<S> $name<S>
+        where
+            S: BuildHasher + 'static,
+        {
+            #[allow(dead_code)] // This function isn't called for StaticPooledPath, because there's no way to get a static Path.
+            const fn new(pool: &'static GlobalPool<$owned, S>, value: &'static $borrowed) -> Self {
+                Self {
+                    init: $statename::Static(pool, value),
+                    cell: OnceLock::new(),
+                }
+            }
+
+            const fn new_fn(
+                pool: &'static GlobalPool<$owned, S>,
+                init: fn() -> Cow<'static, $borrowed>,
+            ) -> Self {
+                Self {
+                    init: $statename::Fn(pool, init),
+                    cell: OnceLock::new(),
+                }
+            }
+
+            /// Returns a reference-counted clone of the contained resource.
+            ///
+            /// If this is the first time the contents are accessed, the value
+            /// will be initialized from the pool on the first access. This
+            /// requires synchronization and can block the current thraed very
+            /// briefly.
+            ///
+            /// All subsequent accesses will be non-blocking.
+            pub fn get(&self) -> &$pooled<S> {
+                self.cell.get_or_init(|| match self.init {
+                    $statename::Static(pool, value) => pool.get(value).clone(),
+                    $statename::Fn(pool, init) => pool.get(init()).clone(),
+                })
+            }
+        }
+
+        #[derive(Debug, Clone, Copy)]
+        #[allow(dead_code)] // Path can't use the Static variant.
+        enum $statename<S>
+        where
+            S: BuildHasher + 'static,
+        {
+            Static(&'static GlobalPool<$owned, S>, &'static $borrowed),
+            Fn(
+                &'static GlobalPool<$owned, S>,
+                fn() -> Cow<'static, $borrowed>,
+            ),
+        }
+
+        impl<S> std::ops::Deref for $name<S>
+        where
+            S: BuildHasher,
+        {
+            type Target = $pooled<S>;
+
+            fn deref(&self) -> &Self::Target {
+                self.get()
+            }
+        }
+
+        impl<S, S2> PartialEq<Pooled<&'static GlobalPool<$owned, S2>, S2>> for $name<S>
+        where
+            S: BuildHasher,
+            S2: BuildHasher,
+        {
+            fn eq(&self, other: &Pooled<&'static GlobalPool<$owned, S2>, S2>) -> bool {
+                self.get() == other
+            }
+        }
+
+        impl<S, S2> PartialEq<$name<S>> for Pooled<&'static GlobalPool<$owned, S2>, S2>
+        where
+            S: BuildHasher,
+            S2: BuildHasher,
+        {
+            fn eq(&self, other: &$name<S>) -> bool {
+                self == other.get()
+            }
+        }
+    };
+}
+
+impl_static_pooled!(
+    StaticPooledString,
+    GlobalString,
+    StaticStringInit,
+    String,
+    str
+);
+impl_static_pooled!(
+    StaticPooledBuffer,
+    GlobalBuffer,
+    StaticBufferInit,
+    Vec<u8>,
+    [u8]
+);
+impl_static_pooled!(StaticPooledPath, GlobalPath, StaticPathInit, PathBuf, Path);

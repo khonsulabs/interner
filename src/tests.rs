@@ -1,12 +1,17 @@
+use std::borrow::Cow;
 use std::collections::hash_map::RandomState;
 use std::collections::HashSet;
 use std::hash::{BuildHasher, Hasher};
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 use std::thread;
 
-use crate::global::GlobalPool;
+use crate::global::{
+    GlobalPool, GlobalString, StaticPooledBuffer, StaticPooledPath, StaticPooledString,
+};
+use crate::pool::PoolKindSealed;
 use crate::shared::{SharedPool, SharedString, StringPool};
-use crate::{pool::PoolKindSealed, Pooled};
+use crate::Pooled;
 
 static GLOBAL_STRINGS: GlobalPool<String> = GlobalPool::new();
 static GLOBAL_PATHS: GlobalPool<PathBuf> = GlobalPool::new();
@@ -136,7 +141,7 @@ fn multithreaded_reaquire() {
     for _ in 0..4 {
         threads.push(thread::spawn(|| {
             for _ in 0..1000 {
-                let _ = GLOBAL_STRINGS.get("multithreaded");
+                let _: GlobalString = GLOBAL_STRINGS.get("multithreaded");
             }
         }));
     }
@@ -190,4 +195,66 @@ fn custom_global_pool() {
     let from_custom = CUSTOM_POOL.get("hello");
     let global = GLOBAL_STRINGS.get("hello");
     assert!(!Pooled::ptr_eq(&from_custom, &global));
+}
+
+#[test]
+fn pooled_debug() {
+    let shared_pool = StringPool::default();
+    let string = shared_pool.get("test");
+
+    let debugged = format!("{string:?}");
+    println!("{debugged}");
+    let expected = format!(
+        "Pooled {{ value: \"test\", index: {:?}, pool: {:?} }}",
+        string.0 .0.index,
+        string.0 .0.pool.address_of()
+    );
+    assert_eq!(debugged, expected);
+
+    let second = shared_pool.get("test");
+    let second_debugged = format!("{second:?}");
+    assert_eq!(second_debugged, debugged);
+
+    let other_pool = StringPool::default();
+
+    let third = other_pool.get("test");
+    let third_debugged = format!("{third:?}");
+    assert_ne!(third_debugged, debugged);
+}
+
+#[test]
+fn statics() {
+    static STATIC_STR: StaticPooledString = GLOBAL_STRINGS.get_static("static");
+    static STATIC_STR_LAZY: StaticPooledString =
+        GLOBAL_STRINGS.get_static_with(|| Cow::Borrowed("static-lazy"));
+
+    static STATIC_PATH_LAZY: StaticPooledPath =
+        GLOBAL_PATHS.get_static_with(|| Cow::Borrowed(Path::new("static-lazy")));
+
+    static STATIC_BUFFER: StaticPooledBuffer = GLOBAL_BUFFERS.get_static(b"static");
+    static STATIC_BUFFER_LAZY: StaticPooledBuffer =
+        GLOBAL_BUFFERS.get_static_with(|| Cow::Borrowed(b"static-lazy"));
+
+    macro_rules! test_static {
+        ($static:ident, $against:expr) => {{
+            let first = $static.get();
+            let first_ptr = Arc::as_ptr(&first.0 .0);
+
+            let second = $static.get();
+            let second_ptr = Arc::as_ptr(&second.0 .0);
+            assert_eq!(first_ptr, second_ptr);
+            assert_eq!(second, $against);
+
+            assert_eq!($static, *second);
+            assert_eq!(second, &*$static);
+        }};
+    }
+
+    test_static!(STATIC_STR, "static");
+    test_static!(STATIC_STR_LAZY, "static-lazy");
+
+    test_static!(STATIC_PATH_LAZY, Path::new("static-lazy"));
+
+    test_static!(STATIC_BUFFER, &b"static"[..]);
+    test_static!(STATIC_BUFFER_LAZY, &b"static-lazy"[..]);
 }
