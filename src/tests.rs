@@ -201,25 +201,15 @@ fn custom_global_pool() {
 fn pooled_debug() {
     let shared_pool = StringPool::default();
     let string = shared_pool.get("test");
+    let expected = "\"test\"";
 
     let debugged = format!("{string:?}");
     println!("{debugged}");
-    let expected = format!(
-        "Pooled {{ value: \"test\", index: {:?}, pool: {:?} }}",
-        string.0 .0.index,
-        string.0 .0.pool.address_of()
-    );
     assert_eq!(debugged, expected);
 
     let second = shared_pool.get("test");
     let second_debugged = format!("{second:?}");
-    assert_eq!(second_debugged, debugged);
-
-    let other_pool = StringPool::default();
-
-    let third = other_pool.get("test");
-    let third_debugged = format!("{third:?}");
-    assert_ne!(third_debugged, debugged);
+    assert_eq!(second_debugged, expected);
 }
 
 #[test]
