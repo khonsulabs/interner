@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
+### v0.2.1
 
 - `Pooled` now implements `Debug` by passing through to the underlying type's
   `Debug` implementation. Previously, it included extra information about which
   pool it belonged to.
+
+### Fixed
+
+- The repository URL in the Cargo manifest now points to the correct repository.
+  Thanks to @laurmaedje for reporting this!
 
 ## v0.2.0
 
