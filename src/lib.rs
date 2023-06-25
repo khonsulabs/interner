@@ -138,11 +138,7 @@ where
     S: BuildHasher,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Pooled")
-            .field("value", &**self)
-            .field("index", &self.0 .0.index)
-            .field("pool", &self.0 .0.pool.address_of())
-            .finish()
+        Debug::fmt(&**self, f)
     }
 }
 
